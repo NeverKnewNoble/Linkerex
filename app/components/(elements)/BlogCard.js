@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-const BlogCard = ({ imageSrc, date, author, title }) => {
+const BlogCard = ({ imageSrc, title }) => {
   return (
     <div className="rounded-lg overflow-hidden shadow-lg bg-white relative group">
       {/* Image */}

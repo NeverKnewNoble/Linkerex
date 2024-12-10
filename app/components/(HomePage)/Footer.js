@@ -1,5 +1,6 @@
 import React from "react";
 import { FaFacebook, FaTwitter, FaGithub, FaYoutube, FaInstagram } from "react-icons/fa";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -24,6 +25,20 @@ const Footer = () => {
             </div>
           </div>
 
+
+
+
+          {/* Company */}
+          <div>
+            <h4 className="text-white font-semibold mb-4">Company</h4>
+            <ul className="space-y-2 text-sm">
+              <li> <Link href={"/#home"}>Home</Link> </li>
+              <li> <Link href={"/jobs"}>Jobs</Link> </li>
+              <li> <Link href={"/#about"}>About</Link> </li>
+            </ul>
+          </div>
+
+
           {/* Solutions */}
           <div>
             <h4 className="text-white font-semibold mb-4">Solutions</h4>
@@ -34,25 +49,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Support */}
-          <div>
-            <h4 className="text-white font-semibold mb-4">Support</h4>
-            <ul className="space-y-2 text-sm">
-              <li>Submit ticket</li>
-              <li>Documentation</li>
-              <li>Guides</li>
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div>
-            <h4 className="text-white font-semibold mb-4">Company</h4>
-            <ul className="space-y-2 text-sm">
-              <li>About</li>
-              <li>Blog</li>
-              <li>Jobs</li>
-            </ul>
-          </div>
 
           {/* Legal */}
           <div>

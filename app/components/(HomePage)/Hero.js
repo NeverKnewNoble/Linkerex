@@ -1,35 +1,45 @@
+"use client";
+
+import {
+  Button,
+} from "@nextui-org/react";
 import React from "react";
-import Image from "next/image";
-import ButtonComp from "../(elements)/ButtonComp";
+import { motion } from "framer-motion";
+import Link from "next/link";
 
 const Hero = () => {
   return (
-    <div className="relative bg-white bg-center bg-no-repeat w-full h-[650px] flex items-center justify-center">
-      {/* Container for Text and Image */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-20 px-6 max-w-6xl mx-auto">
-        {/* Text Section */}
-        <div className="text-center md:text-left text-black max-w-lg">
-          <h1 className="text-[50px] md:text-5xl font-bold mb-4 leading-tight">
+    <div
+      className="relative bg-center bg-cover bg-no-repeat w-full h-[650px] flex items-center justify-center"
+      style={{
+        backgroundImage: "url('/linkerex/bgkate.jpg')",
+      }}
+    >
+      <motion.div
+        className="absolute inset-0 bg-black bg-opacity-40"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      />
+      <div className="flex flex-col md:flex-row items-center justify-between gap-10 px-6 max-w-6xl  z-10">
+        {/* Text Section with Animation */}
+        <motion.div
+          className="text-center md:text-left text-white"
+          initial={{ x: -100, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+        >
+          <h1 className="text-[80px] md:text-[100px] font-bold  leading-tight">
             We Link Opportunities <br />
             To You
           </h1>
-          <h3 className="text-lg md:text-xl mb-6">We got the Link You Need</h3>
-          <ButtonComp
-            label={"Find A Job Now"}
-            href={"/jobs"}
-            className="hover:bg-[#ddecff] hover:text-black border hover:border-black"
-          />
-        </div>
-        {/* Image Section */}
-        <div>
-          <Image
-            src="/linkerex/lady.jpg"
-            alt="Person"
-            width={500}
-            height={500}
-            className="rounded shadow-md"
-          />
-        </div>
+
+          <Link href={"/jobs"}>
+          <Button variant="faded"  className="ml-3 bg-[#2f71c7] text-white hover:bg-white hover:text-black font-bold border-none w-[200px]">
+            Find A Job Now
+          </Button>
+          </Link>
+        </motion.div>
       </div>
     </div>
   );

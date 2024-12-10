@@ -1,9 +1,22 @@
-import React from "react";
+"use client";
+
+import React, { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import BlogCard from "../(elements)/BlogCard";
 
 const HelpBanner = () => {
+  // Ref to track visibility
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" }); // Triggers animation when 50px into viewport
+
   return (
-    <div className="relative bg-[#2f71c7] bg-center bg-no-repeat w-full h-auto py-10 text-white pb-20">
+    <motion.div
+      ref={ref}
+      className="relative bg-white bg-center bg-no-repeat w-full h-auto py-10 text-[#18181b] pb-[100px] pt-[100px]"
+      initial={{ opacity: 0, y: 50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 1, ease: "easeOut" }}
+    >
       {/* Header Section */}
       <div className="flex justify-center text-center mb-10">
         <h1 className="text-4xl md:text-5xl font-bold leading-tight max-w-2xl">
@@ -12,27 +25,26 @@ const HelpBanner = () => {
       </div>
 
       {/* Blog Cards Section */}
-      <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+      <motion.div
+        className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4"
+        initial={{ opacity: 0 }}
+        animate={isInView ? { opacity: 1 } : {}}
+        transition={{ delay: 0.5, duration: 1 }}
+      >
         <BlogCard
           imageSrc="/linkerex/monitorlooks.jpg"
-          date="Mar 16, 2020"
-          author="Michael Foster"
           title="Get That Internship You Have Been Searching For"
         />
         <BlogCard
           imageSrc="/linkerex/sitting.jpg"
-          date="Mar 10, 2020"
-          author="Lindsay Walton"
           title="Collaborate with Companies on projects"
         />
         <BlogCard
           imageSrc="/linkerex/thinking.jpg"
-          date="Feb 12, 2020"
-          author="Tom Cook"
           title="Improve your career experience"
         />
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
