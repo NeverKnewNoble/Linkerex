@@ -9,14 +9,11 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-  Avatar,
   User,
 } from "@nextui-org/react";
 
-
-
-
-
+// Temporary variable for testing responsiveness
+let Logged = "Offline";
 
 export const AcmeLogo = () => {
   return (
@@ -35,12 +32,12 @@ export default function App() {
   return (
     <Navbar
       position="static"
-      className="bg-white shadow-md" // Add Tailwind classes
-      style={{ backgroundColor: "black" }} // Inline style for fallback
+      className="bg-white shadow-md"
+      style={{ backgroundColor: "black" }}
     >
       <NavbarBrand>
         <Link href={"/#home"}>
-        <Image
+          <Image
             src="/linkerex/whitelin.png"
             alt="Linkerex Logo"
             width={144}
@@ -51,36 +48,91 @@ export default function App() {
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem>
-          <Link color="foreground" className="text-white hover:text-[#2f71c7]" href={"/#home"}>
+          <Link className="text-white hover:text-[#2f71c7]" href={"/#home"}>
             HOME
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link color="foreground" className="text-white hover:text-[#2f71c7]" href={"/jobs"}>
+          <Link className="text-white hover:text-[#2f71c7]" href={"/jobs"}>
             JOBS
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link color="foreground" className="text-white hover:text-[#2f71c7]" href="/#about">
+          <Link className="text-white hover:text-[#2f71c7]" href="/#about">
             ABOUT US
           </Link>
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
-          <Link href={"/login"}>
-            <Button variant="flat" className="text-white border bg-black hover:bg-[#2f71c7] hover:text-white font-semibold hover:border-[#2f71c7]">
-              LOGIN
-            </Button>
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link href={"/sign_up"}>
-            <Button color="primary" href="#" variant="flat" className="border hover:text-white hover:bg-black bg-[#18181b] text-white font-semibold">
-              SIGN UP
-            </Button>
-          </Link>
-        </NavbarItem>
+        {Logged === "Online" ? (
+          <Dropdown placement="bottom-start">
+            <DropdownTrigger>
+              <User
+                as="button"
+                avatarProps={{
+                  isBordered: true,
+                  src: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+                }}
+                className="transition-transform"
+                description="@tonyreichert"
+                name="Tony Reichert"
+              />
+            </DropdownTrigger>
+            <DropdownMenu aria-label="User Actions" variant="flat">
+              <DropdownItem key="profile" className="h-14 gap-2">
+                <p className="font-bold">Signed in as</p>
+                <p className="font-bold">@tonyreichert</p>
+              </DropdownItem>
+              <DropdownItem
+                key="user"
+                onClick={() => (window.location.href = "/info")}
+              >
+                User
+              </DropdownItem>
+              <DropdownItem
+                key="applied_jobs"
+                onClick={() => (window.location.href = "/applied_jobs")}
+              >
+                Applied Jobs
+              </DropdownItem>
+              <DropdownItem
+                key="settings"
+                onClick={() => (window.location.href = "/")}
+              >
+                Settings
+              </DropdownItem>
+              <DropdownItem key="logout" color="danger">
+                Log Out
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        ) : Logged === "Offline" ? (
+          <>
+            <NavbarItem className="hidden lg:flex">
+              <Link href={"/login"}>
+                <Button
+                  variant="flat"
+                  className="text-white border bg-black hover:bg-[#2f71c7] hover:text-white font-semibold hover:border-[#2f71c7]"
+                >
+                  LOGIN
+                </Button>
+              </Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Link href={"/sign_up"}>
+                <Button
+                  color="primary"
+                  variant="flat"
+                  className="border hover:text-white hover:bg-black bg-[#18181b] text-white font-semibold"
+                >
+                  SIGN UP
+                </Button>
+              </Link>
+            </NavbarItem>
+          </>
+        ) : (
+          console.log("Status of user unknown!!!")
+        )}
       </NavbarContent>
     </Navbar>
   );

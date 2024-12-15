@@ -135,7 +135,7 @@ const Jobs = () => {
 
 
       {/* Job List Section */}
-      <section className="pt-10">
+      <section className="">
         <div className="container mx-auto px-6">
           <Joblist />
         </div>

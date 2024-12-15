@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Icon } from "@iconify/react";
+import Link from "next/link";
 
 const JobCard = ({
   title,
@@ -11,6 +12,7 @@ const JobCard = ({
   image,
   ratings,
   reviews,
+  jobType, // Add jobType prop for job classification
   className = "", // Add a className prop for dynamic styling
 }) => {
   const [isFavorited, setIsFavorited] = useState(false);
@@ -34,6 +36,19 @@ const JobCard = ({
     }
   };
 
+  const getJobTypeStyles = (type) => {
+    switch (type) {
+      case "Full Time":
+        return "bg-purple-500 text-white";
+      case "Part Time":
+        return "bg-orange-500 text-white";
+      case "Internship":
+        return "bg-green-500 text-white";
+      default:
+        return "bg-gray-300 text-black";
+    }
+  };
+
   return (
     <div
       className={`bg-[#1a1a1a] text-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between ${className}`}
@@ -50,6 +65,14 @@ const JobCard = ({
             className={`text-xl ${isFavorited ? "text-blue-500" : "text-gray-400"}`}
           />
         </button>
+        {/* Job Type Tag */}
+        <div
+          className={`absolute top-2 left-2 px-2 py-1 rounded-md text-sm font-semibold ${getJobTypeStyles(
+            jobType
+          )}`}
+        >
+          {jobType}
+        </div>
       </div>
 
       {/* Content Section */}
@@ -62,7 +85,7 @@ const JobCard = ({
         {/* Price Div */}
         <div>
           <p className="text-blue-500 font-bold">
-            ${price} / {getPricingLabel()}
+            GH₵{price} / {getPricingLabel()}
           </p>
         </div>
 
@@ -87,9 +110,12 @@ const JobCard = ({
         <div className="flex-grow"></div>
 
         {/* Apply Button */}
-        <button className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-300 mt-4">
-          Apply For This Job
-        </button>
+        <Link href={'/jobs/applying_to_job'} >
+          <button className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-300 mt-4">
+            Apply For This Job
+          </button>
+        </Link>
+
       </div>
     </div>
   );

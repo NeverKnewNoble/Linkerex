@@ -68,7 +68,7 @@ export default function Component() {
             <Checkbox name="remember" size="sm">
               Remember me
             </Checkbox>
-            <Link className="text-blue-500 hover:underline" href="#" size="sm">
+            <Link className="text-blue-500 hover:underline" href="/forgot_pswd" size="sm">
               Forgot password?
             </Link>
           </div>

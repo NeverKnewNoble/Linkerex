@@ -1,5 +1,6 @@
 import React from "react";
 import JobCard from "./JobCard";
+import { Pagination } from "@nextui-org/react";
 
 const Joblist = () => {
   // Array of job and internship opportunities
@@ -12,6 +13,7 @@ const Joblist = () => {
       image: "/linkerex/thinking.jpg",
       ratings: 4,
       reviews: 123,
+      jobType: "Full Time", // Add jobType property
     },
     {
       title: "Marketing Intern",
@@ -21,6 +23,7 @@ const Joblist = () => {
       image: "/linkerex/thinking.jpg",
       ratings: 5,
       reviews: 98,
+      jobType: "Internship", // Add jobType property
     },
     {
       title: "Customer Support",
@@ -30,6 +33,7 @@ const Joblist = () => {
       image: "/linkerex/thinking.jpg",
       ratings: 3,
       reviews: 67,
+      jobType: "Part Time", // Add jobType property
     },
     {
       title: "Data Analyst",
@@ -39,6 +43,7 @@ const Joblist = () => {
       image: "/linkerex/thinking.jpg",
       ratings: 4,
       reviews: 200,
+      jobType: "Full Time", // Add jobType property
     },
     {
       title: "Graphic Designer Intern",
@@ -48,6 +53,7 @@ const Joblist = () => {
       image: "/linkerex/thinking.jpg",
       ratings: 5,
       reviews: 89,
+      jobType: "Internship", // Add jobType property
     },
     {
       title: "Sales Executive",
@@ -57,6 +63,7 @@ const Joblist = () => {
       image: "/linkerex/thinking.jpg",
       ratings: 4,
       reviews: 145,
+      jobType: "Full Time", // Add jobType property
     },
     {
       title: "Content Writer",
@@ -66,6 +73,7 @@ const Joblist = () => {
       image: "/linkerex/thinking.jpg",
       ratings: 5,
       reviews: 74,
+      jobType: "Part Time", // Add jobType property
     },
     {
       title: "Digital Marketer",
@@ -75,6 +83,7 @@ const Joblist = () => {
       image: "/linkerex/thinking.jpg",
       ratings: 5,
       reviews: 150,
+      jobType: "Full Time", // Add jobType property
     },
   ];
 
@@ -83,6 +92,7 @@ const Joblist = () => {
       {/* Job Opportunities Section */}
       <section className="bg-white py-12">
         <div className="container mx-auto px-4">
+          {/* Section Title */}
           <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
             Explore Opportunities
           </h1>
@@ -99,10 +109,16 @@ const Joblist = () => {
                 image={opportunity.image}
                 ratings={opportunity.ratings}
                 reviews={opportunity.reviews}
+                jobType={opportunity.jobType} // Pass the jobType property
                 className="w-full"
               />
             ))}
           </div>
+        </div>
+
+        {/* Pagination Section */}
+        <div className="flex align-middle justify-center mt-10">
+          <Pagination initialPage={1} total={10} />
         </div>
       </section>
     </div>
