@@ -1,21 +1,100 @@
 "use client";
 
-import { Select, SelectItem, Button, Input, Checkbox, Link, Divider } from "@nextui-org/react";
+import {
+  Button,
+  Input,
+  Checkbox,
+  Link,
+  Divider,
+  Alert, // Import Alert component
+} from "@nextui-org/react";
 import React, { useState } from "react";
 import { Icon } from "@iconify/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation"; // Use Next.js router
+import axios from "axios";
 
+// Account Types
 export const accountTypes = [
   { key: "student", label: "Student" },
   { key: "company", label: "Company" },
 ];
 
+// Signup Form Component
 export default function SignupForm() {
   const [isVisible, setIsVisible] = useState(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [accountType, setAccountType] = useState("");
+  const [alert, setAlert] = useState({ type: "", message: "" }); // State for alert
+  const router = useRouter(); // Initialize Next.js router
 
   const toggleVisibility = () => setIsVisible(!isVisible);
-  const toggleConfirmVisibility = () => setIsConfirmVisible(!isConfirmVisible);
+  const toggleConfirmVisibility = () =>
+    setIsConfirmVisible(!isConfirmVisible);
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validation
+    if (password !== confirmPassword) {
+      setAlert({ type: "danger", message: "Passwords do not match!" });
+      return;
+    }
+
+    if (!accountType) {
+      setAlert({ type: "danger", message: "Please select an account type!" });
+      return;
+    }
+
+    const userData = {
+      username,
+      email,
+      password,
+      account_type: accountType,
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/users",
+        userData,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (response.status === 201) {
+        setAlert({ type: "success", message: "User created successfully!" });
+        setUsername("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+        setAccountType("");
+
+        // Redirect to login page after 2 seconds
+        setTimeout(() => {
+          router.push("/login");
+        }, 2000);
+      }
+    } catch (err) {
+      if (err.response && err.response.data.error) {
+        setAlert({
+          type: "danger",
+          message: `Error creating user: ${err.response.data.error}`,
+        });
+      } else {
+        setAlert({
+          type: "danger",
+          message: `Error creating user: ${err.message}`,
+        });
+      }
+    }
+  };
+
+
 
   return (
     <div className="flex h-full w-full items-center justify-center bg-black">
@@ -31,89 +110,111 @@ export default function SignupForm() {
             />
           </Link>
         </div>
-        <form className="flex flex-col gap-3" onSubmit={(e) => e.preventDefault()}>
-          <div className="flex flex-col">
-            <Input
-              isRequired
-              classNames={{
-                base: "-mb-[2px]",
-                inputWrapper: "rounded-b-none data-[hover=true]:z-10 group-data-[focus-visible=true]:z-10",
-              }}
-              label="Username"
-              name="username"
-              placeholder="Enter your username"
-              type="text"
-              variant="bordered"
-            />
-            <Input
-              isRequired
-              classNames={{
-                base: "-mb-[2px]",
-                inputWrapper: "rounded-none data-[hover=true]:z-10 group-data-[focus-visible=true]:z-10",
-              }}
-              label="Email Address"
-              name="email"
-              placeholder="Enter your email"
-              type="email"
-              variant="bordered"
-            />
-            <Input
-              isRequired
-              classNames={{
-                base: "-mb-[2px]",
-                inputWrapper: "rounded-none data-[hover=true]:z-10 group-data-[focus-visible=true]:z-10",
-              }}
-              endContent={
-                <button type="button" onClick={toggleVisibility}>
-                  {isVisible ? (
-                    <Icon className="pointer-events-none text-2xl text-default-400" icon="solar:eye-closed-linear" />
-                  ) : (
-                    <Icon className="pointer-events-none text-2xl text-default-400" icon="solar:eye-bold" />
-                  )}
-                </button>
-              }
-              label="Password"
-              name="password"
-              placeholder="Enter your password"
-              type={isVisible ? "text" : "password"}
-              variant="bordered"
-            />
-            <Input
-              isRequired
-              classNames={{
-                inputWrapper: "rounded-t-none",
-              }}
-              endContent={
-                <button type="button" onClick={toggleConfirmVisibility}>
-                  {isConfirmVisible ? (
-                    <Icon className="pointer-events-none text-2xl text-default-400" icon="solar:eye-closed-linear" />
-                  ) : (
-                    <Icon className="pointer-events-none text-2xl text-default-400" icon="solar:eye-bold" />
-                  )}
-                </button>
-              }
-              label="Confirm Password"
-              name="confirmPassword"
-              placeholder="Confirm your password"
-              type={isConfirmVisible ? "text" : "password"}
-              variant="bordered"
-            />
-            <Select className="mt-2 w-full" label="Select Account Type" variant="bordered ">
+        {/* Alert Component */}
+        {alert.message && (
+          <Alert color={alert.type} className="mb-4">
+            {alert.message}
+          </Alert>
+        )}
+        <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
+          {/* Username Input */}
+          <Input
+            isRequired
+            label="Username"
+            name="username"
+            placeholder="Enter your username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          {/* Email Input */}
+          <Input
+            isRequired
+            label="Email Address"
+            name="email"
+            placeholder="Enter your email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          {/* Password Input */}
+          <Input
+            isRequired
+            label="Password"
+            name="password"
+            placeholder="Enter your password"
+            type={isVisible ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            endContent={
+              <button type="button" onClick={toggleVisibility}>
+                {isVisible ? (
+                  <Icon
+                    className="pointer-events-none text-2xl"
+                    icon="solar:eye-closed-linear"
+                  />
+                ) : (
+                  <Icon
+                    className="pointer-events-none text-2xl"
+                    icon="solar:eye-bold"
+                  />
+                )}
+              </button>
+            }
+          />
+          {/* Confirm Password Input */}
+          <Input
+            isRequired
+            label="Confirm Password"
+            name="confirmPassword"
+            placeholder="Confirm your password"
+            type={isConfirmVisible ? "text" : "password"}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            endContent={
+              <button type="button" onClick={toggleConfirmVisibility}>
+                {isConfirmVisible ? (
+                  <Icon
+                    className="pointer-events-none text-2xl"
+                    icon="solar:eye-closed-linear"
+                  />
+                ) : (
+                  <Icon
+                    className="pointer-events-none text-2xl"
+                    icon="solar:eye-bold"
+                  />
+                )}
+              </button>
+            }
+          />
+          {/* Custom Select for Account Type */}
+          <div className="mt-2 w-full">
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              Select Account Type
+            </label>
+            <select
+              className="block w-full bg-gray-900 text-gray-300 border border-gray-600 rounded-md px-3 py-2 focus:ring focus:ring-indigo-500 focus:outline-none"
+              value={accountType}
+              onChange={(e) => setAccountType(e.target.value)}
+              required
+            >
+              <option value="" disabled>
+                -- Select Account Type --
+              </option>
               {accountTypes.map((type) => (
-                <SelectItem key={type.key}>{type.label}</SelectItem>
+                <option key={type.key} value={type.key}>
+                  {type.label}
+                </option>
               ))}
-            </Select>
+            </select>
           </div>
-          <Checkbox isRequired className="py-4" size="sm">
+          {/* Agreement Checkbox */}
+          <Checkbox isRequired className="py-4">
             I agree with the&nbsp;
-            <Link href="#" size="sm">
-              Terms
-            </Link>
-            &nbsp;and&nbsp;
-            <Link href="#" size="sm">
-              Privacy Policy
-            </Link>
+            <Link href="#">Terms</Link>&nbsp;and&nbsp;
+            <Link href="#">Privacy Policy</Link>
           </Checkbox>
+          {/* Submit Button */}
           <Button color="primary" type="submit">
             Sign Up
           </Button>
@@ -130,18 +231,10 @@ export default function SignupForm() {
           >
             Sign Up with Google
           </Button>
-          <Button
-            startContent={<Icon className="text-default-500" icon="fe:github" width={24} />}
-            variant="bordered"
-          >
-            Sign Up with Github
-          </Button>
         </div>
         <p className="text-center text-small">
           Already have an account?&nbsp;
-          <Link href={"/login"} size="sm">
-            Log In
-          </Link>
+          <Link href="/login">Log In</Link>
         </p>
       </div>
     </div>
