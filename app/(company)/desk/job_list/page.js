@@ -1,6 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Loading from "../../../loading";
+import { useSession } from "next-auth/react";
+import axios from "axios";
 import {
   Table,
   TableHeader,
@@ -8,85 +11,45 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Badge,
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
   Button,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Input,
-  Select,
-  SelectItem,
-  Textarea,
-  useDisclosure,
 } from "@nextui-org/react";
-
-import { Icon } from "@iconify/react";
 import Link from "next/link";
 
 export default function JobList() {
-  const jobs = [
-    {
-      id: 1,
-      title: "Front-End Developer",
-      category: "Development",
-      jobType: "Full Time",
-      price: "GH₵ 40/hour",
-    },
-    {
-      id: 2,
-      title: "Marketing Intern",
-      category: "Marketing",
-      jobType: "Internship",
-      price: "GH₵ 15/hour",
-    },
-    {
-      id: 3,
-      title: "Customer Support",
-      category: "Support",
-      jobType: "Part Time",
-      price: "GH₵ 20/hour",
-    },
-    {
-      id: 4,
-      title: "Data Analyst",
-      category: "Analytics",
-      jobType: "Full Time",
-      price: "GH₵ 35/hour",
-    },
-  ];
+  const { data: session, status } = useSession();
+  const [jobs, setJobs] = useState([]);
 
-  const getJobTypeBadge = (jobType) => {
-    switch (jobType) {
-      case "Full Time":
-        return (
-          <Badge className="bg-purple-100 text-purple-800 font-semibold">
-            {jobType}
-          </Badge>
-        );
-      case "Part Time":
-        return (
-          <Badge className="bg-orange-100 text-orange-800 font-semibold">
-            {jobType}
-          </Badge>
-        );
-      case "Internship":
-        return (
-          <Badge className="bg-green-100 text-green-800 font-semibold">
-            {jobType}
-          </Badge>
-        );
-      default:
-        return <Badge>{jobType}</Badge>;
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/jobs");
+        console.log("API Response:", response.data);
+
+        if (session?.user?.id) {
+          const filteredJobs = response.data.filter(
+            (job) => job.createdby === session.user.id
+          );
+          console.log("Filtered Jobs:", filteredJobs);
+          setJobs(filteredJobs);
+        }
+      } catch (err) {
+        console.error("Error fetching jobs:", err.message);
+      }
+    };
+
+    if (session) {
+      console.log("Session data:", session); // Debug session
+      fetchJobs();
     }
-  };
+  }, [session]);
 
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  if (status === "loading") {
+    return <Loading />;
+  }
 
   return (
     <div
@@ -96,18 +59,14 @@ export default function JobList() {
       }}
     >
       <div className="w-full bg-white min-h-screen mx-10 my-5 rounded-lg shadow-lg">
-        {/* Job List Title */}
         <h1 className="text-[50px] font-bold ml-8 mt-5 text-black">Job List</h1>
-
-        {/* Table Section */}
         <div className="mt-5 px-6">
           <div className="bg-white rounded-lg p-6 relative">
             <div className="flex justify-end mb-2">
-              <Button className="bg-black hover:bg-[#2f71c7]" onPress={onOpen}>
-                Add New Job
-              </Button>
+              <Link href={"/desk/job_list/create-job"}>
+                <Button className="bg-black hover:bg-[#2f71c7]">Add New Job</Button>
+              </Link>
             </div>
-
             <Table
               aria-label="Available Job Listings"
               lined
@@ -119,19 +78,19 @@ export default function JobList() {
                 <TableColumn>Title</TableColumn>
                 <TableColumn>Category</TableColumn>
                 <TableColumn>Job Type</TableColumn>
-                <TableColumn>Wage|Salary /hour</TableColumn>
+                <TableColumn>Amount</TableColumn>
                 <TableColumn>Actions</TableColumn>
               </TableHeader>
               <TableBody>
                 {jobs.map((job) => (
                   <TableRow
-                    key={job.id}
+                    key={job._id}
                     className="hover:bg-gray-100 hover:text-black transition-all duration-200 font-medium"
                   >
-                    <TableCell className="font-semibold">{job.title}</TableCell>
-                    <TableCell>{job.category}</TableCell>
-                    <TableCell>{getJobTypeBadge(job.jobType)}</TableCell>
-                    <TableCell>{job.price}</TableCell>
+                    <TableCell>{job.title}</TableCell>
+                    <TableCell>{job.category || "N/A"}</TableCell>
+                    <TableCell>{job.jobType}</TableCell>
+                    <TableCell>{`GH₵ ${job.amount}`}</TableCell>
                     <TableCell>
                       <Dropdown>
                         <DropdownTrigger>
@@ -144,12 +103,10 @@ export default function JobList() {
                           </Button>
                         </DropdownTrigger>
                         <DropdownMenu aria-label="Actions">
-                          <DropdownItem key="copy">Copy Job Link</DropdownItem>
-                          <DropdownItem key="edit" showDivider>
-                            Edit Job Listing
-                          </DropdownItem>
-                          <DropdownItem key="delete" color="danger">
-                            Delete Job Listing
+                          <DropdownItem key="edit">
+                            <Link href={`/desk/job_list/edit_job?id=${job._id}`}>
+                              Edit Job Listing
+                            </Link>
                           </DropdownItem>
                         </DropdownMenu>
                       </Dropdown>
@@ -161,90 +118,6 @@ export default function JobList() {
           </div>
         </div>
       </div>
-
-      {/* Create New Job Modal */}
-      <Modal
-        backdrop="blur"
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        className="max-w-lg mx-auto"
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Create New Job Listing
-              </ModalHeader>
-              <ModalBody className="flex flex-col gap-4">
-                <Input
-                  label="Title"
-                  placeholder="Enter job title"
-                  variant="bordered"
-                  required
-                />
-
-                <Select label="Job Type" variant="bordered" required>
-                  <SelectItem value="Full Time">Full-Time</SelectItem>
-                  <SelectItem value="Part Time">Part Time</SelectItem>
-                  <SelectItem value="Internship">Internship</SelectItem>
-                </Select>
-
-                <Select label="Payment Timeline" variant="bordered" required>
-                  <SelectItem value="per Hour">Salary (per hour)</SelectItem>
-                  <SelectItem value="per Month">Wage (per month)</SelectItem>
-                </Select>
-
-                <Input
-                  label="Salary | Wage (GH₵)"
-                  placeholder="Enter price"
-                  type="number"
-                  step="0.01"
-                  variant="bordered"
-                  required
-                />
-
-                {/* Upload Job Listing Image */}
-                <div>
-                  <label className="block text-[20px] font-semibold mb-2">
-                    Listing Image:
-                  </label>
-                  <div className="flex items-center gap-4">
-                    <Button
-                      variant="bordered"
-                      className="text-blue-500 border-blue-500 hover:bg-blue-100"
-                    >
-                      <Icon icon="mdi:upload" className="text-xl mr-2" /> Upload
-                    </Button>
-                    <span className="text-gray-600">No file selected</span>
-                  </div>
-                </div>
-
-                <Textarea
-                  label="Description"
-                  placeholder="Enter job description"
-                  minRows={3}
-                  variant="bordered"
-                  required
-                />
-
-                <Textarea
-                  label="Requirements"
-                  placeholder="Enter job requirements"
-                  minRows={3}
-                  variant="bordered"
-                  required
-                />
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Cancel
-                </Button>
-                <Button color="primary">Create Job Listing</Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
     </div>
   );
 }

@@ -29,6 +29,20 @@ const SignUpSchema = new mongoose.Schema(
             required: true,
             enum: ['admin', 'student', 'company'], 
         },
+        companyName: {
+            type: String,
+            required: function () {
+              return this.account_type === "company";
+            },
+            default: null, 
+        },
+        companyLocation: {
+        type: String,
+        required: function () {
+            return this.account_type === "company";
+        },
+        default: null, 
+        },  
     },
     { collection: 'users', timestamps: true }
 );

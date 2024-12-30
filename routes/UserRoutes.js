@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const router = express.Router();
 const User = require("../models/User");
 
+
 // Database Connection Function
 const connectDb = async () => {
   if (mongoose.connections[0].readyState) return; // Check if already connected
@@ -31,23 +32,26 @@ const ensureDbConnection = async (req, res, next) => {
 // Apply DB connection middleware
 router.use(ensureDbConnection);
 
+
+
 //? Create New User Route
 router.post("/", async (req, res) => {
   console.log("Request method:", req.method);
   console.log("Request body:", req.body);
 
-  const { username, email, password, account_type } = req.body;
+  const { username, email, password, account_type, companyName, companyLocation } = req.body;
 
   try {
-    const user = new User({ username, email, password, account_type });
-    console.log("Saving user:", user);
-    await user.save(); // Save user to DB
+    const user = new User({ username, email, password, account_type, companyName, companyLocation });
+    console.log("Saving users:", user);
+    await user.save();
     res.status(201).json(user);
   } catch (err) {
     console.error("Error creating user:", err);
     res.status(400).json({ error: err.message });
   }
 });
+
 
 //? Get ALL Users Route
 router.get("/", async (req, res) => {

@@ -5,6 +5,7 @@ import Navbar from "../components/(HomePage)/Navbar";
 import AboutUs from "../components/(HomePage)/AboutUs";
 
 
+
 export default function Layout({ children }) {
   return (
     <main id="home" className="font-work-sans">
@@ -14,6 +15,7 @@ export default function Layout({ children }) {
       {children}
       <AboutUs />
       <Footer />
+      
     </main>
   );
 }

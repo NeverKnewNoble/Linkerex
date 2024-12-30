@@ -7,36 +7,40 @@ const Joblist = () => {
   const opportunities = [
     {
       title: "Front-End Developer",
+      company: "Af Tech",
+      location: "Spintex",
+      category: "IT & Development",
       price: "30.00",
       pricingType: "hour",
       description: "Build interactive web applications.",
-      image: "/linkerex/thinking.jpg",
-      ratings: 4,
-      reviews: 123,
       jobType: "Full Time", // Add jobType property
     },
     {
       title: "Marketing Intern",
+      company: "Af Tech",
+      company: "Af Tech",
+      location: "Spintex",
+      category: "IT & Development",
       price: "15.00",
       pricingType: "hour",
       description: "Assist marketing campaigns and social media.",
-      image: "/linkerex/thinking.jpg",
-      ratings: 5,
-      reviews: 98,
       jobType: "Internship", // Add jobType property
     },
     {
-      title: "Customer Support",
+      title: "Customer Support for the rest of the month in a sovient ",
+      company: "Af Tech",
+      location: "Spintex",
+      category: "IT & Development",
       price: "20.00",
       pricingType: "hour",
       description: "Provide email and chat support.",
-      image: "/linkerex/thinking.jpg",
-      ratings: 3,
-      reviews: 67,
       jobType: "Part Time", // Add jobType property
     },
     {
       title: "Data Analyst",
+      company: "Af Tech",
+      location: "Spintex",
+      category: "IT & Development",
       price: "40.00",
       pricingType: "hour",
       description: "Analyze datasets for client insights.",
@@ -47,6 +51,9 @@ const Joblist = () => {
     },
     {
       title: "Graphic Designer Intern",
+      company: "Af Tech",
+      location: "Spintex",
+      category: "IT & Development",
       price: "12.00",
       pricingType: "hour",
       description: "Design engaging graphics for clients.",
@@ -77,6 +84,7 @@ const Joblist = () => {
     },
     {
       title: "Digital Marketer",
+      company: "Af Tech",
       price: "35.00",
       pricingType: "hour",
       description: "Manage digital marketing campaigns.",
@@ -103,10 +111,12 @@ const Joblist = () => {
               <JobCard
                 key={index}
                 title={opportunity.title}
+                company={opportunity.company}
+                location={opportunity.location}
+                category={opportunity.category}
                 price={opportunity.price}
                 pricingType={opportunity.pricingType}
                 description={opportunity.description}
-                image={opportunity.image}
                 ratings={opportunity.ratings}
                 reviews={opportunity.reviews}
                 jobType={opportunity.jobType} // Pass the jobType property
@@ -126,3 +136,4 @@ const Joblist = () => {
 };
 
 export default Joblist;
+ 

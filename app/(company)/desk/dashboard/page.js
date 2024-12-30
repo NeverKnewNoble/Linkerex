@@ -1,6 +1,14 @@
-import Image from "next/image";
+// import { useSession } from "next-auth/react";
+
 
 export default function Dashboard() {
+  // const { data: status } = useSession();
+
+  // //? Handle loading and unauthenticated states
+  // if (status === "loading") {
+  //   return <Loading />;
+  // }
+
   return (
     <div
       className="min-h-screen bg-cover bg-center flex items-center justify-center p-4"
@@ -53,7 +61,7 @@ export default function Dashboard() {
         </div>
 
         {/* Bottom Section */}
-        <div className="mt-10 px-8">
+        <div className="my-10 px-8 ">
           <div className="bg-[#18181b] w-full h-[300px] rounded-lg flex items-center justify-center text-white font-semibold shadow-md">
             <p className="text-[30px]">More Dashboard Content Coming Soon !!!</p>
           </div>
