@@ -7,7 +7,7 @@ import { useSession, signOut } from "next-auth/react";
 import Loading from "../../../loading";
 import Login_now from "../../../NotLoggedIn";
 
-const Info = () => {
+const CompanyDetails = () => {
   const { data: session, status } = useSession();
   const [formData, setFormData] = React.useState({
     username: "",
@@ -200,6 +200,26 @@ const Info = () => {
                 className="text-white"
                 value={session.user.account_type || ""}
               />
+                <Input
+                label="Company Name"
+                labelPlacement="outside"
+                name="company_name"
+                placeholder=""
+                type="text"
+                className="text-white"
+                value={session.user.company_name || ""}
+                onChange={handleChange}
+              />
+                <Input
+                label="Company Location"
+                labelPlacement="outside"
+                name="comapany_location"
+                placeholder=""
+                type="text"
+                className="text-white"
+                value={session.user.company_location || ""}
+                onChange={handleChange}
+              />
               <div className="flex gap-4 justify-center">
                 <Button onClick={() => updateUserInfo()} color="primary" auto type="submit">
                   Save
@@ -222,4 +242,4 @@ const Info = () => {
   );
 };
 
-export default Info;
+export default CompanyDetails;

@@ -1,76 +1,11 @@
-// const express = require("express");
-// const next = require("next");
-// const mongoose = require("mongoose");
-// require("dotenv").config(); // Load environment variables
-
-// const userRoutes = require("./routes/UserRoutes"); // Import userRoutes
-
-// const dev = process.env.NODE_ENV !== "production";
-// const app = next({ dev });
-// const handle = app.getRequestHandler();
-
-// const PORT = 5000; // Use 5000 for the Express server
-
-// // Function to connect to MongoDB
-// const connectDb = async () => {
-//   try {
-//     await mongoose.connect(process.env.MONGO_URI);
-//     console.log("MongoDB connected");
-//   } catch (err) {
-//     console.error("MongoDB connection error:", err);
-//     process.exit(1); // Exit if database connection fails
-//   }
-// };
-
-// // Start the server
-// app.prepare()
-//   .then(async () => {
-//     console.log("Next.js app prepared");
-
-//     // Connect to MongoDB
-//     await connectDb();
-
-//     const server = express();
-
-//     // Middleware to parse JSON requests
-//     server.use(express.json());
-
-//     // Middleware to log incoming requests
-//     server.use((req, res, next) => {
-//       console.log(`Incoming request: ${req.method} ${req.url}`);
-//       next();
-//     });
-
-//     // Register the user routes
-//     server.use("/api/users", userRoutes);
-
-//     // Handle Next.js-specific routes
-//     server.all("*", (req, res) => {
-//       return handle(req, res);
-//     });
-
-//     // Start listening on PORT 5000
-//     server.listen(PORT, (err) => {
-//       if (err) {
-//         console.error("Error starting the server:", err);
-//         throw err;
-//       }
-//       console.log(`> Express API ready on http://localhost:${PORT}`);
-//     });
-//   })
-//   .catch((err) => {
-//     console.error("Error during server initialization:", err);
-//     process.exit(1); // Exit if the server fails to initialize
-//   });
-
-
 const express = require("express");
 const next = require("next");
 const mongoose = require("mongoose");
 const cors = require("cors"); // Import CORS middleware
 require("dotenv").config(); // Load environment variables
 
-const userRoutes = require("./routes/UserRoutes"); // Import user routes
+const userRoutes = require("./routes/UserRoutes");
+const JobRoutes = require("./routes/JobRoutes");
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
@@ -115,8 +50,10 @@ app.prepare()
       next();
     });
 
+
     // Register the user routes
     server.use("/api/users", userRoutes);
+    server.use("/api/jobs", JobRoutes)
 
     // Handle all other routes with Next.js
     server.all("*", (req, res) => {
