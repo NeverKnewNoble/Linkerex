@@ -227,8 +227,8 @@ export default function CreateJob() {
               className="w-full px-4 py-2 bg-gray-800 text-gray-300 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select job type</option>
-              <option value="Full Time">Full-Time</option>
-              <option value="Part Time">Part-Time</option>
+              <option value="Full-Time">Full-Time</option>
+              <option value="Part-Time">Part-Time</option>
               <option value="Internship">Internship</option>
             </select>
           </div>

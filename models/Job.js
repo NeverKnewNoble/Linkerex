@@ -34,7 +34,7 @@ const JobSchema = new mongoose.Schema(
             type: String,
             required: true,            
         },
-        requirements: { // Fixed typo in field name
+        requirements: { 
             type: String,
             required: true,      
         },
