@@ -4,16 +4,20 @@ const mongoose = require("mongoose");
 const cors = require("cors"); // Import CORS middleware
 require("dotenv").config(); // Load environment variables
 
+
+// ! Import Routes 
 const userRoutes = require("./routes/UserRoutes");
-const JobRoutes = require("./routes/JobRoutes");
+const jobRoutes = require("./routes/JobRoutes");
+const appliedJobRoutes = require("./routes/AppliedJobRoutes");
+
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
-
 const PORT = 5000; // Port for Express server
 
-// Function to connect to MongoDB
+
+// ! Function to connect to MongoDB
 const connectDb = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -24,7 +28,8 @@ const connectDb = async () => {
   }
 };
 
-// Start the server
+
+// ! Start the server
 app.prepare()
   .then(async () => {
     console.log("Next.js app prepared");
@@ -51,9 +56,11 @@ app.prepare()
     });
 
 
-    // Register the user routes
+    //  Register the user routes
     server.use("/api/users", userRoutes);
-    server.use("/api/jobs", JobRoutes)
+    server.use("/api/jobs", jobRoutes); // Ensure this matches the imported name
+    server.use("/api/applied", appliedJobRoutes);
+
 
     // Handle all other routes with Next.js
     server.all("*", (req, res) => {

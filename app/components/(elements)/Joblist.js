@@ -1,139 +1,195 @@
-import React from "react";
+
+// import React, { useState, useEffect } from "react";
+// import axios from "axios";
+// import JobCard from "./JobCard";
+// import { Pagination } from "@nextui-org/react";
+
+// const Joblist = ({ searchQuery, filters }) => {
+//   const [jobs, setJobs] = useState([]);
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const jobsPerPage = 8;
+
+//   const fetchJobs = async () => {
+//     try {
+//       const res = await axios.get("http://localhost:5000/api/jobs");
+//       setJobs(res.data);
+//     } catch (err) {
+//       console.error("Failed to fetch jobs:", err.message);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchJobs();
+//   }, []);
+
+//   // Apply filters
+//   const filteredJobs = jobs.filter((job) => {
+//     const matchesQuery = searchQuery
+//       ? job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+//         job.company.toLowerCase().includes(searchQuery.toLowerCase())
+//       : true;
+
+//     const matchesChips = filters.chips.length
+//       ? filters.chips.some((chip) =>
+//           job.title.toLowerCase().includes(chip.toLowerCase())
+//         )
+//       : true;
+
+//     const matchesJobType = filters.jobTypes.length
+//       ? filters.jobTypes.includes(job.jobType)
+//       : true;
+
+//     return matchesQuery && matchesChips && matchesJobType;
+//   });
+
+//   const indexOfLastJob = currentPage * jobsPerPage;
+//   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+//   const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
+
+//   return (
+//     <div>
+//       <section className="bg-white py-12">
+//         <div className="container mx-auto px-4">
+//           <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+//             Explore Opportunities
+//           </h1>
+
+//           {filteredJobs.length > 0 ? (
+//             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+//               {currentJobs.map((job) => (
+//                 <JobCard key={job._id} id={job._id} {...job} /> // Pass the job ID as a prop
+//               ))}
+//             </div>
+//           ) : (
+//             <div className="text-center text-gray-500 text-lg mt-10">
+//               No Jobs Available
+//             </div>
+//           )}
+//         </div>
+
+//         {filteredJobs.length > 0 && (
+//           <div className="flex align-middle justify-center mt-10">
+//             <Pagination
+//               initialPage={1}
+//               total={Math.ceil(filteredJobs.length / jobsPerPage)}
+//               onChange={(page) => setCurrentPage(page)}
+//             />
+//           </div>
+//         )}
+//       </section>
+//     </div>
+//   );
+// };
+
+// export default Joblist;
+
+
+
+
+
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import JobCard from "./JobCard";
 import { Pagination } from "@nextui-org/react";
+import { useSession } from "next-auth/react";
 
-const Joblist = () => {
-  // Array of job and internship opportunities
-  const opportunities = [
-    {
-      title: "Front-End Developer",
-      company: "Af Tech",
-      location: "Spintex",
-      category: "IT & Development",
-      price: "30.00",
-      pricingType: "hour",
-      description: "Build interactive web applications.",
-      jobType: "Full Time", // Add jobType property
-    },
-    {
-      title: "Marketing Intern",
-      company: "Af Tech",
-      company: "Af Tech",
-      location: "Spintex",
-      category: "IT & Development",
-      price: "15.00",
-      pricingType: "hour",
-      description: "Assist marketing campaigns and social media.",
-      jobType: "Internship", // Add jobType property
-    },
-    {
-      title: "Customer Support for the rest of the month in a sovient ",
-      company: "Af Tech",
-      location: "Spintex",
-      category: "IT & Development",
-      price: "20.00",
-      pricingType: "hour",
-      description: "Provide email and chat support.",
-      jobType: "Part Time", // Add jobType property
-    },
-    {
-      title: "Data Analyst",
-      company: "Af Tech",
-      location: "Spintex",
-      category: "IT & Development",
-      price: "40.00",
-      pricingType: "hour",
-      description: "Analyze datasets for client insights.",
-      image: "/linkerex/thinking.jpg",
-      ratings: 4,
-      reviews: 200,
-      jobType: "Full Time", // Add jobType property
-    },
-    {
-      title: "Graphic Designer Intern",
-      company: "Af Tech",
-      location: "Spintex",
-      category: "IT & Development",
-      price: "12.00",
-      pricingType: "hour",
-      description: "Design engaging graphics for clients.",
-      image: "/linkerex/thinking.jpg",
-      ratings: 5,
-      reviews: 89,
-      jobType: "Internship", // Add jobType property
-    },
-    {
-      title: "Sales Executive",
-      price: "25.00",
-      pricingType: "hour",
-      description: "Expand the customer base and close deals.",
-      image: "/linkerex/thinking.jpg",
-      ratings: 4,
-      reviews: 145,
-      jobType: "Full Time", // Add jobType property
-    },
-    {
-      title: "Content Writer",
-      price: "18.00",
-      pricingType: "hour",
-      description: "Write engaging content for websites.",
-      image: "/linkerex/thinking.jpg",
-      ratings: 5,
-      reviews: 74,
-      jobType: "Part Time", // Add jobType property
-    },
-    {
-      title: "Digital Marketer",
-      company: "Af Tech",
-      price: "35.00",
-      pricingType: "hour",
-      description: "Manage digital marketing campaigns.",
-      image: "/linkerex/thinking.jpg",
-      ratings: 5,
-      reviews: 150,
-      jobType: "Full Time", // Add jobType property
-    },
-  ];
+const Joblist = ({ searchQuery, filters }) => {
+  const [jobs, setJobs] = useState([]);
+  const [appliedJobs, setAppliedJobs] = useState([]); // Store applied jobs data
+  const [currentPage, setCurrentPage] = useState(1);
+  const jobsPerPage = 8;
+  const { data: session } = useSession();
+
+  // Fetch all jobs
+  const fetchJobs = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/jobs");
+      setJobs(res.data);
+    } catch (err) {
+      console.error("Failed to fetch jobs:", err.message);
+    }
+  };
+
+  // Fetch applied jobs for the logged-in user
+  const fetchAppliedJobs = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/applied");
+      setAppliedJobs(res.data);
+    } catch (err) {
+      console.error("Failed to fetch applied jobs:", err.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchJobs();
+    if (session?.user?.id) {
+      fetchAppliedJobs();
+    }
+  }, [session]);
+
+  // Apply filters
+  const filteredJobs = jobs.filter((job) => {
+    const matchesQuery = searchQuery
+      ? job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        job.company.toLowerCase().includes(searchQuery.toLowerCase())
+      : true;
+
+    const matchesChips = filters.chips.length
+      ? filters.chips.some((chip) =>
+          job.title.toLowerCase().includes(chip.toLowerCase())
+        )
+      : true;
+
+    const matchesJobType = filters.jobTypes.length
+      ? filters.jobTypes.includes(job.jobType)
+      : true;
+
+    return matchesQuery && matchesChips && matchesJobType;
+  });
+
+  const indexOfLastJob = currentPage * jobsPerPage;
+  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+  const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
 
   return (
     <div>
-      {/* Job Opportunities Section */}
       <section className="bg-white py-12">
         <div className="container mx-auto px-4">
-          {/* Section Title */}
           <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
             Explore Opportunities
           </h1>
 
-          {/* Responsive Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {opportunities.map((opportunity, index) => (
-              <JobCard
-                key={index}
-                title={opportunity.title}
-                company={opportunity.company}
-                location={opportunity.location}
-                category={opportunity.category}
-                price={opportunity.price}
-                pricingType={opportunity.pricingType}
-                description={opportunity.description}
-                ratings={opportunity.ratings}
-                reviews={opportunity.reviews}
-                jobType={opportunity.jobType} // Pass the jobType property
-                className="w-full"
-              />
-            ))}
-          </div>
+          {filteredJobs.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {currentJobs.map((job) => (
+                <JobCard
+                  key={job._id}
+                  id={job._id} // Pass the job ID
+                  {...job}
+                  appliedJobs={appliedJobs} // Pass applied jobs data
+                  userId={session?.user?.id} // Pass the logged-in user ID
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-gray-500 text-lg mt-10">
+              No Jobs Available
+            </div>
+          )}
         </div>
 
-        {/* Pagination Section */}
-        <div className="flex align-middle justify-center mt-10">
-          <Pagination initialPage={1} total={10} />
-        </div>
+        {filteredJobs.length > 0 && (
+          <div className="flex align-middle justify-center mt-10">
+            <Pagination
+              initialPage={1}
+              total={Math.ceil(filteredJobs.length / jobsPerPage)}
+              onChange={(page) => setCurrentPage(page)}
+            />
+          </div>
+        )}
       </section>
     </div>
   );
 };
 
 export default Joblist;
- 

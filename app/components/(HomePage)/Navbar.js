@@ -216,7 +216,7 @@ export default function App() {
               </DropdownItem>
               <DropdownItem key="user" onClick={() => (window.location.href = "/info")}>User</DropdownItem>
               <DropdownItem key="applied_jobs" onClick={() => (window.location.href = "/applied_jobs")}>Applied Jobs</DropdownItem>
-              <DropdownItem key="settings" onClick={() => (window.location.href = "/")}>Settings</DropdownItem>
+              {/* <DropdownItem key="settings" onClick={() => (window.location.href = "/")}>Settings</DropdownItem> */}
               <DropdownItem key="logout" color="danger" onClick={() => signOut({ callbackUrl: "/" })}>Log Out</DropdownItem>
             </DropdownMenu>
           </Dropdown>

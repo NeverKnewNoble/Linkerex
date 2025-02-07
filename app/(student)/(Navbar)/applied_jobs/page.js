@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -14,40 +14,57 @@ import {
   DropdownMenu,
   DropdownItem,
   Button,
+  Alert,
 } from "@nextui-org/react";
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 const AppliedJobs = () => {
-  const jobs = [
-    {
-      id: 1,
-      title: "Front-End Developer",
-      company: "Tech Solutions Inc.",
-      jobType: "Full Time",
-      status: "Pending",
-    },
-    {
-      id: 2,
-      title: "Marketing Intern",
-      company: "Creative Minds Ltd.",
-      jobType: "Internship",
-      status: "Interview Scheduled",
-    },
-    {
-      id: 3,
-      title: "Customer Support",
-      company: "ServiceCo",
-      jobType: "Part Time",
-      status: "Accepted",
-    },
-    {
-      id: 4,
-      title: "Data Analyst",
-      company: "Insight Analytics",
-      jobType: "Full Time",
-      status: "Rejected",
-    },
-  ];
+  const [appliedJobs, setAppliedJobs] = useState([]); // State to store merged applied jobs data
+  const { data: session } = useSession(); // Get the logged-in user session
+  const [alert, setAlert] = useState(null);
 
+  // Fetch jobs and applied jobs data
+  const fetchData = async () => {
+    try {
+      // Fetch all jobs
+      const jobsResponse = await axios.get("http://localhost:5000/api/jobs");
+      const jobs = jobsResponse.data;
+
+      // Fetch applied jobs
+      const appliedResponse = await axios.get("http://localhost:5000/api/applied");
+      const appliedJobs = appliedResponse.data;
+
+      // Filter applied jobs to show only those applied by the logged-in user and have "studentAction": "Submitted"
+      const userAppliedJobs = appliedJobs.filter(
+        (job) => job.studentId === session?.user?.id && job.studentAction === "Submitted"
+      );
+
+      // Merge data from both APIs
+      const mergedJobs = userAppliedJobs.map((appliedJob) => {
+        const jobDetails = jobs.find((job) => job._id === appliedJob.jobId);
+        return {
+          ...appliedJob, // Include applied job details
+          appliedId: appliedJob._id, // Preserve the applied job's _id
+          ...jobDetails, // Include job details
+        };
+      });
+
+      setAppliedJobs(mergedJobs);
+    } catch (err) {
+      console.error("Failed to fetch data:", err.message);
+    }
+  };
+
+  // Fetch data on component mount or when session changes
+  useEffect(() => {
+    if (session?.user?.id) {
+      fetchData();
+    }
+  }, [session]);
+
+  // Get status badge styling
   const getStatusBadge = (status) => {
     let bgColor = "";
     let textColor = "";
@@ -83,17 +100,90 @@ const AppliedJobs = () => {
     );
   };
 
+  // **Copy Job Link
+  const copyTextToClipboard = (jobId) => {
+    const jobLink = `http://localhost:3000/jobs/applying_to_job?id=${jobId}`;
+    navigator.clipboard
+      .writeText(jobLink)
+      .then(() => {
+        console.log("Copied To Clipboard");
+        // Show success alert
+        setAlert({
+          color: "success",
+          message: "Copied To Clipboard",
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to copy to clipboard", err);
+        // Show error alert
+        setAlert({
+          color: "danger",
+          message: "Failed to copy to clipboard",
+        });
+      });
+  };
+
+  // **Update The Applied Job Information
+  const withdrawUpdate = async (appliedId) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/applied/${appliedId}`,
+        {
+          studentAction: "Withdrawn", // Assuming the action should be "Withdrawn" based on the function name
+        }
+      );
+
+      if (response.status === 200) {
+        setAlert({
+          type: "success",
+          message: "Submittion Withdrawn Successfully!",
+        });
+        // Refetch the data to update the UI
+        fetchData();
+      } else {
+        // Handle other successful status codes or non-200 successful responses if needed
+        console.log("Successful response with status:", response.status);
+      }
+    } catch (error) {
+      console.error("Failed to Withdraw The Submittion:", error);
+      // Show error alert
+      setAlert({
+        type: "danger",
+        message: error.response
+          ? error.response.data.message
+          : "Failed to Withdraw The Submittion",
+      });
+    }
+  };
+
   return (
-    <div className="min-h-screen  bg-cover bg-center bg-white py-10"
-    style={{
-      backgroundImage: "url('/linkerex/inf.jpg')", // Using project image as background
-    }}
+    <div
+      className="min-h-screen bg-cover bg-center bg-white py-10"
+      style={{
+        backgroundImage: "url('/linkerex/inf.jpg')", // Using project image as background
+      }}
     >
+      {/* Alert Popup */}
+      {alert && (
+        <div className="fixed top-14 right-4 z-50">
+          <Alert
+            color={alert.color}
+            variant="flat"
+            onClose={() => setAlert(null)}
+            className="shadow-lg"
+          >
+            {alert.message}
+          </Alert>
+        </div>
+      )}
+
       <div className="container mx-auto px-6">
         {/* Page Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white">My Applied Jobs</h1>
-          <p className="text-white mt-2">Track the status of all your applications in one place.</p>
+          <p className="text-white mt-2">
+            Track the status of all your applications in one place.
+          </p>
         </div>
 
         {/* Table Container */}
@@ -109,14 +199,16 @@ const AppliedJobs = () => {
               <TableColumn className="font-semibold text-white">Title</TableColumn>
               <TableColumn className="font-semibold text-white">Company</TableColumn>
               <TableColumn className="font-semibold text-white">Job Type</TableColumn>
-              <TableColumn className="font-semibold text-white">Application Status</TableColumn>
+              <TableColumn className="font-semibold text-white">
+                Application Status
+              </TableColumn>
               <TableColumn className="font-semibold text-white">Actions</TableColumn>
             </TableHeader>
             <TableBody>
-              {jobs.map((job) => (
+              {appliedJobs.map((job) => (
                 <TableRow
-                  key={job.id}
-                  className="hover:bg-gray-100 transition-all duration-200 text-white font-semibold hover:text-black"
+                  key={job.appliedId} // Use job.appliedId as the unique key
+                  className="hover:bg-gray-700 transition-all duration-200 hover:text-white"
                 >
                   <TableCell className="font-semibold">{job.title}</TableCell>
                   <TableCell>{job.company}</TableCell>
@@ -130,17 +222,30 @@ const AppliedJobs = () => {
                         <Button
                           isIconOnly
                           variant="flat"
-                          className="text-black bg-gray-100 hover:bg-black hover:text-white"
+                          className="text-black bg-gray-100 hover:bg-black hover:text-white border-black border-1"
                         >
                           +
                         </Button>
                       </DropdownTrigger>
                       <DropdownMenu aria-label="Actions">
-                        <DropdownItem key="copy">Copy Job Link</DropdownItem>
-                        <DropdownItem key="edit" showDivider>
-                          Edit Proposal
+                        <DropdownItem key="copy" onPress={() => copyTextToClipboard(job.jobId)}>
+                          Copy Job Link
                         </DropdownItem>
-                        <DropdownItem key="delete" color="danger">
+                        <DropdownItem key="edit" showDivider>
+                        <Link
+                            href={{
+                              pathname: "/applied_jobs/edit_proposal",
+                              query: { id: job.jobId, userId: session?.user?.id, appliedId: job.appliedId }, // Pass appliedId
+                            }}
+                          >
+                            Edit Proposal
+                          </Link>
+                        </DropdownItem>
+                        <DropdownItem
+                          key="delete"
+                          onPress={() => withdrawUpdate(job.appliedId)}
+                          color="danger"
+                        >
                           Withdraw Application
                         </DropdownItem>
                       </DropdownMenu>
