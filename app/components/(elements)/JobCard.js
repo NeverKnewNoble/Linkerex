@@ -260,7 +260,7 @@ const JobCard = ({
         <div className="">
           <p className="text-white font-bold">{Pricing()}</p>
         </div>
-        <p className="text-sm text-gray-400 mt-2">{description}</p>
+        <p className="text-sm text-gray-400 mt-2 line-clamp-3">{description}</p>
         <div className="flex-grow"></div>
 
         {jobType === "Internship" ? (

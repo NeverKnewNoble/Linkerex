@@ -3,6 +3,7 @@ const multer = require("multer");
 const AppliedJobs = require("../models/AppliedJobs"); // Import your schema
 const router = express.Router();
 const mongoose = require("mongoose");
+require("dotenv").config();
 
 
 
@@ -41,7 +42,7 @@ const upload = multer({
 const connectDb = async () => {
   if (mongoose.connections[0].readyState) return; // Check if already connected
   try {
-    await mongoose.connect("mongodb://localhost:27017/linkerex", {
+    await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
@@ -111,6 +112,25 @@ router.get("/", async (req, res) => {
   } catch (err) {
     console.error("Error fetching applied jobs:", err);
     res.status(500).json({ message: "Failed to fetch applied jobs.", error: err.message });
+  }
+});
+
+
+// **GET The applied Job by ID
+router.get("/:appliedId", async (req, res) => {
+  const { appliedId } = req.params;
+  
+  try {
+    const appliedJob = await AppliedJobs.findById(appliedId); // ✅ Fix: Use `AppliedJobs`
+    
+    if (!appliedJob) {
+      return res.status(404).json({ message: "Application not found" });
+    }
+    
+    res.status(200).json(appliedJob);
+  } catch (error) {
+    console.error("Error fetching application:", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 });
 

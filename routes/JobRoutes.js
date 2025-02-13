@@ -2,13 +2,14 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
 const Job = require("../models/Job");
+require("dotenv").config();
 
 
 // ? Database Connection Function
 const connectDb = async () => {
   if (mongoose.connections[0].readyState) return; // Check if already connected
   try {
-    await mongoose.connect("mongodb://localhost:27017/linkerex", {
+    await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
