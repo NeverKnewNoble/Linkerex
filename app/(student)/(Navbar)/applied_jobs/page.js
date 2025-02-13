@@ -232,10 +232,10 @@ const AppliedJobs = () => {
                           Copy Job Link
                         </DropdownItem>
                         <DropdownItem key="edit" showDivider>
-                        <Link
+                          <Link
                             href={{
                               pathname: "/applied_jobs/edit_proposal",
-                              query: { id: job.jobId, userId: session?.user?.id, appliedId: job.appliedId }, // Pass appliedId
+                              query: { id: job.jobId, userId: session?.user?.id, appliedId: job.appliedId }, // ✅ Include appliedId
                             }}
                           >
                             Edit Proposal

@@ -24,9 +24,10 @@ const HelpBanner = () => {
         </h1>
       </div>
 
+      <div className="flex justify-center align-center">
       {/* Blog Cards Section */}
       <motion.div
-        className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4"
+        className="container  grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-10 "
         initial={{ opacity: 0 }}
         animate={isInView ? { opacity: 1 } : {}}
         transition={{ delay: 0.5, duration: 1 }}
@@ -44,6 +45,8 @@ const HelpBanner = () => {
           title="Improve your career experience"
         />
       </motion.div>
+      </div>
+
     </motion.div>
   );
 };
