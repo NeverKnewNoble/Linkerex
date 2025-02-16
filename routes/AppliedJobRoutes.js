@@ -135,6 +135,81 @@ router.get("/:appliedId", async (req, res) => {
 });
 
 
+// **PUT - Update an applied job**
+router.put("/:appliedId", upload.single("file"), async (req, res) => {
+  const { appliedId } = req.params;
+  const { coverLetter } = req.body;
+  const file = req.file; // Uploaded file
+
+  try {
+    // ✅ Validate MongoDB ID format
+    if (!mongoose.Types.ObjectId.isValid(appliedId)) {
+      return res.status(400).json({ message: "Invalid applied job ID format" });
+    }
+
+    // ✅ Check if the applied job exists
+    const appliedJob = await AppliedJobs.findById(appliedId);
+    if (!appliedJob) {
+      return res.status(404).json({ message: "Applied Job Not Found!" });
+    }
+
+    // ✅ Prepare update data
+    const updateData = {
+      "applicationDetails.coverLetter": coverLetter,
+    };
+
+    // ✅ Update the file path if a new file is uploaded
+    if (file) {
+      updateData["applicationDetails.uploadedFile"] = file.path;
+    }
+
+    // ✅ Perform the update
+    const updatedJob = await AppliedJobs.findByIdAndUpdate(
+      appliedId,
+      { $set: updateData },
+      { new: true, runValidators: true }
+    );
+
+    res.status(200).json({ message: "Proposal updated successfully!", updatedJob });
+  } catch (err) {
+    console.error("Failed to update applied job:", err);
+    res.status(500).json({ message: "Internal Server Error", error: err.message });
+  }
+});
+
+
+
+// **PUT - Withdraw an application (Separate from Edit Proposal)**
+router.put("/:appliedId/withdraw", async (req, res) => {
+  const { appliedId } = req.params;
+
+  try {
+    // ✅ Validate MongoDB ID format
+    if (!mongoose.Types.ObjectId.isValid(appliedId)) {
+      return res.status(400).json({ message: "Invalid applied job ID format" });
+    }
+
+    // ✅ Check if the applied job exists
+    const appliedJob = await AppliedJobs.findById(appliedId);
+    if (!appliedJob) {
+      return res.status(404).json({ message: "Applied Job Not Found!" });
+    }
+
+    // ✅ Update `studentAction` to "Withdrawn"
+    appliedJob.studentAction = "Withdrawn";
+    await appliedJob.save();
+
+    res.status(200).json({ message: "Application withdrawn successfully!", appliedJob });
+  } catch (err) {
+    console.error("Failed to withdraw application:", err);
+    res.status(500).json({ message: "Internal Server Error", error: err.message });
+  }
+});
+
+
+
+
+
 
 // **PUT/UPDATE **where the id is the applied id not the jobid**
 router.put("/:id", upload.single("file"), async (req, res) => {
