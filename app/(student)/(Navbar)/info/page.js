@@ -171,10 +171,10 @@ const Info = () => {
               }}
             >
               <Input
-                label="Username"
+                label="Full Name"
                 labelPlacement="outside"
                 name="username"
-                placeholder="Enter your username"
+                placeholder="Enter your Full Name"
                 type="text"
                 className="text-white"
                 value={formData.username}

@@ -112,9 +112,9 @@ export default function SignupForm() {
         <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
           <Input
             isRequired
-            label="Username"
+            label="Full Name"
             name="username"
-            placeholder="Enter your username"
+            placeholder="Enter your Full Name"
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
