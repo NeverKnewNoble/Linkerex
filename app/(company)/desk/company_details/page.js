@@ -1,170 +1,121 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Form, Input, Button, Alert } from "@nextui-org/react";
 import { useSession, signOut } from "next-auth/react";
+import { motion } from "framer-motion";
 import Loading from "../../../loading";
 import Login_now from "../../../NotLoggedIn";
 
 const CompanyDetails = () => {
   const { data: session, status } = useSession();
-  const [formData, setFormData] = React.useState({
+  const [formData, setFormData] = useState({
     username: "",
     email: "",
+    company_name: "",
+    company_location: "",
   });
-  const [alert, setAlert] = React.useState(null); // Define alert state
-  const [showModal, setShowModal] = React.useState(false); // Modal visibility state
+  const [alert, setAlert] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (session?.user) {
       setFormData({
         username: session.user.username || "",
         email: session.user.email || "",
+        company_name: session.user.company_name || "",
+        company_location: session.user.company_location || "",
       });
     }
   }, [session]);
 
-  //? Handle loading and unauthenticated states
-  if (status === "loading") {
-    return <Loading />;
-  }
+  if (status === "loading") return <Loading />;
+  if (status === "unauthenticated") return <Login_now />;
 
-  if (status === "unauthenticated") {
-    return <Login_now />;
-  }
-
-  //? Function to Update User Information
   const updateUserInfo = async () => {
     try {
       const res = await fetch(`http://localhost:5000/api/users/${session.user.id}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
-      if (res.ok) {
-        setAlert({
-          type: "success",
-          message: "User information updated successfully! .......Please Note, Any Changes Will Apply After An Hour!",
-        });
-      } else {
-        const errorData = await res.json();
-        setAlert({
-          type: "danger",
-          message: `Failed to update user information: ${errorData.error}`,
-        });
-      }
+      const result = await res.json();
+      setAlert({
+        type: res.ok ? "success" : "error",
+        message: res.ok
+          ? "Profile updated successfully! Changes will apply after an hour."
+          : `Update failed: ${result.error || "Unknown error"}`,
+      });
     } catch (err) {
-      console.error("Error updating user information:", err);
-      setAlert({ type: "danger", message: `Error: ${err.message}` });
+      setAlert({ type: "error", message: `Error: ${err.message}` });
     }
   };
 
-  //? Handle Input Change
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  //? Function to Delete Account
   const deleteById = async () => {
     try {
       const res = await fetch(`http://localhost:5000/api/users/${session.user.id}`, {
         method: "DELETE",
       });
+
       if (res.ok) {
-        console.log("User Deleted");
         setAlert({ type: "success", message: "Account deleted successfully!" });
+        signOut({ callbackUrl: "/" });
       } else {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Failed to delete user");
+        throw new Error("Failed to delete user");
       }
     } catch (err) {
-      console.error("Error deleting user:", err);
-      setAlert({ type: "danger", message: `Error: ${err.message}` });
+      setAlert({ type: "error", message: `Error: ${err.message}` });
     }
   };
 
-  //? Modal Component
-  const Modal = ({ onClose, onConfirm }) => {
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md text-black">
-          <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
-          <p className="mb-6">Are you sure you want to delete your account? This action cannot be undone.</p>
-          <div className="flex justify-end gap-4">
-            <button
-              className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-              onClick={onClose}
-            >
-              Cancel
-            </button>
-            <button
-              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-              onClick={() => {
-                signOut({ callbackUrl: "/" });
-                onConfirm();
-              }}
-            >
-              Confirm
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
-    <div
-      className="min-h-screen bg-cover bg-center flex flex-col items-center justify-center p-4"
-      style={{
-        backgroundImage: "url('/linkerex/inf.jpg')",
-      }}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-br from-gray-900 to-black"
     >
-      <div className="max-w-[1900px] w-[1200px] mb-3">
+      <motion.div
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="w-full max-w-[1200px] bg-white/90 dark:bg-gray-800 rounded-lg shadow-lg p-8"
+      >
         {alert && (
-          <Alert color={alert.type === "success" ? "success" : "error"}>
+          <Alert color={alert.type === "success" ? "success" : "error"} className="mb-4">
             {alert.message}
           </Alert>
         )}
-      </div>
 
-      <div className="bg-white/90 w-full max-w-[1200px] flex flex-col items-center justify-center rounded-lg shadow-2xl p-8">
-        <div className="mb-8 text-center">
-          <h1 className="text-black text-4xl font-bold">My Information</h1>
-        </div>
-        <div className="flex flex-col lg:flex-row items-start justify-between w-full gap-8">
-          <div className="bg-black flex-shrink-0 w-full lg:w-[350px] flex flex-col items-center justify-center rounded-lg shadow-lg p-6">
-            <div>
-              {session.user.account_type === "student" ? (
-                <Image
-                  src="/linkerex/user1.png"
-                  alt="User Avatar"
-                  width={200}
-                  height={200}
-                  className="w-[200px] h-[200px] rounded-full mb-4 shadow-md object-cover overflow-hidden"
-                />
-              ) : (
-                <Image
-                  src="/linkerex/user1.png"
-                  alt="User Avatar"
-                  width={100}
-                  height={100}
-                  className="w-[200px] h-[200px] rounded-full mb-4 shadow-md object-fill overflow-hidden"
-                />
-              )}
-            </div>
-            <p className="text-white font-bold text-xl">{formData.username || ""}</p>
-            <p className="text-gray-100 font-medium text-lg">{session.user.account_type || ""}</p>
-          </div>
-          <div className="bg-black w-full lg:w-[750px] flex flex-col items-center justify-center rounded-lg shadow-lg p-8">
+        <h1 className="text-center text-4xl font-bold text-black dark:text-white">Company Details</h1>
+
+        <div className="flex flex-col lg:flex-row items-start justify-between w-full gap-10 mt-6">
+          {/* Profile Card */}
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-gray-900 text-white w-full lg:w-1/3 rounded-lg shadow-lg p-6 flex flex-col items-center"
+          >
+            <Image
+              src="/linkerex/user1.png"
+              alt="User Avatar"
+              width={200}
+              height={200}
+              className="rounded-full shadow-lg"
+            />
+            <p className="text-xl font-bold mt-4">{formData.username}</p>
+            <p className="text-gray-400">{session.user.account_type || "User"}</p>
+          </motion.div>
+
+          {/* Information Form */}
+          <motion.div
+            initial={{ x: 30, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            className="w-full lg:w-2/3 bg-gray-900 text-white rounded-lg shadow-lg p-6"
+          >
             <Form
-              className="w-full flex flex-col gap-6"
-              validationBehavior="native"
-              onReset={() => setFormData({ username: "", email: "" })}
+              className="space-y-6"
               onSubmit={(e) => {
                 e.preventDefault();
                 updateUserInfo();
@@ -172,60 +123,53 @@ const CompanyDetails = () => {
             >
               <Input
                 label="Username"
-                labelPlacement="outside"
                 name="username"
                 placeholder="Enter your username"
                 type="text"
-                className="text-white"
                 value={formData.username}
-                onChange={handleChange}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                className="text-white"
               />
               <Input
                 label="Email"
-                labelPlacement="outside"
                 name="email"
                 placeholder="Enter your Email"
                 type="email"
-                className="text-white"
                 value={formData.email}
-                onChange={handleChange}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="text-white"
               />
               <Input
                 readOnly
                 label="Account Type"
-                labelPlacement="outside"
                 name="account_type"
-                placeholder="Choose Account Type"
-                type="text"
-                className="text-white"
                 value={session.user.account_type || ""}
+                className="text-white"
               />
-                <Input
+              <Input
                 label="Company Name"
-                labelPlacement="outside"
                 name="company_name"
-                placeholder=""
+                placeholder="Enter company name"
                 type="text"
+                value={formData.company_name}
+                onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
                 className="text-white"
-                value={session.user.company_name || ""}
-                onChange={handleChange}
               />
-                <Input
+              <Input
                 label="Company Location"
-                labelPlacement="outside"
-                name="comapany_location"
-                placeholder=""
+                name="company_location"
+                placeholder="Enter company location"
                 type="text"
+                value={formData.company_location}
+                onChange={(e) => setFormData({ ...formData, company_location: e.target.value })}
                 className="text-white"
-                value={session.user.company_location || ""}
-                onChange={handleChange}
               />
+
               <div className="flex gap-4 justify-center">
-                <Button onClick={() => updateUserInfo()} color="primary" auto type="submit">
-                  Save
+                <Button color="primary" auto type="submit">
+                  Save Changes
                 </Button>
                 <Button
-                  type="reset"
                   variant="flat"
                   className="bg-red-600 text-white hover:bg-red-700"
                   onClick={() => setShowModal(true)}
@@ -234,11 +178,44 @@ const CompanyDetails = () => {
                 </Button>
               </div>
             </Form>
-          </div>
+          </motion.div>
         </div>
-      </div>
-      {showModal && <Modal onClose={() => setShowModal(false)} onConfirm={deleteById} />}
-    </div>
+      </motion.div>
+
+      {/* Modal for Account Deletion */}
+      {showModal && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        >
+          <motion.div
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0.8 }}
+            className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg w-full max-w-md text-black dark:text-white"
+          >
+            <h2 className="text-xl font-bold">Confirm Deletion</h2>
+            <p className="mt-2">Are you sure you want to delete your account? This action cannot be undone.</p>
+            <div className="flex justify-end gap-4 mt-6">
+              <Button onClick={() => setShowModal(false)} className="bg-gray-300 dark:bg-gray-700">
+                Cancel
+              </Button>
+              <Button
+                className="bg-red-600 text-white hover:bg-red-700"
+                onClick={() => {
+                  deleteById();
+                  setShowModal(false);
+                }}
+              >
+                Confirm
+              </Button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </motion.div>
   );
 };
 

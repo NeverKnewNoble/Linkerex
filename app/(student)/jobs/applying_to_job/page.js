@@ -248,7 +248,7 @@ const ApplyingToJobs = () => {
             <label className="block text-lg font-semibold mb-2">Cover Letter</label>
             <Textarea
               placeholder="Write your cover letter here..."
-              minRows={5}
+              minRows={10}
               className="w-full font-white"
               value={coverLetter}
               onChange={handleCoverLetterChange}

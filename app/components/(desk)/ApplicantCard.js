@@ -3,16 +3,20 @@
 import React from "react";
 import Image from "next/image";
 import { Icon } from "@iconify/react";
+import { useRouter } from "next/navigation";
 
 const ApplicantCard = ({
+  appliedId,
   name,
-  university,
   email,
   jobCategory,
-  jobTitle,
-  image, // Dynamic image source
+  jobTitle, 
   className = "",
 }) => {
+
+  const router = useRouter(); // Use Next.js router
+
+
   return (
     <div
       className={`bg-white border text-black rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between p-4 ${className}`}
@@ -20,7 +24,7 @@ const ApplicantCard = ({
       {/* Image Section */}
       <div className="flex items-center gap-4">
         <Image
-          src={image} // Dynamic image source
+          src={"/linkerex/user1.png"} 
           alt={`${name}'s Avatar`}
           width={80}
           height={80}
@@ -28,7 +32,7 @@ const ApplicantCard = ({
         />
         <div>
           <h3 className="text-lg font-bold">{name}</h3>
-          <p className="text-gray-700 text-sm">{university}</p>
+          <p className="text-gray-700 text-sm">Student</p>
         </div>
       </div>
 
@@ -61,6 +65,7 @@ const ApplicantCard = ({
 
       {/* View Button */}
       <button
+        onClick={() => router.push(`/desk/applicants/application_details?id=${appliedId}`)}
         className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-300 mt-4"
       >
         View
