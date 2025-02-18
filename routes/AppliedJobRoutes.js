@@ -135,7 +135,7 @@ router.get("/:appliedId", async (req, res) => {
 });
 
 
-// **PUT - Update an applied job**
+// **PUT - Update an Specific to file and coverLetter capplied job**
 router.put("/:appliedId", upload.single("file"), async (req, res) => {
   const { appliedId } = req.params;
   const { coverLetter } = req.body;
@@ -179,9 +179,9 @@ router.put("/:appliedId", upload.single("file"), async (req, res) => {
 
 
 
-// **PUT - Withdraw an application (Separate from Edit Proposal)**
-router.put("/:appliedId/withdraw", async (req, res) => {
-  const { appliedId } = req.params;
+// **PUT - Update application Status**
+router.put("/:appliedId/:updateStatus", async (req, res) => {
+  const { appliedId, updateStatus } = req.params; // ✅ Get appliedId and updateStatus from request params
 
   try {
     // ✅ Validate MongoDB ID format
@@ -195,20 +195,16 @@ router.put("/:appliedId/withdraw", async (req, res) => {
       return res.status(404).json({ message: "Applied Job Not Found!" });
     }
 
-    // ✅ Update `studentAction` to "Withdrawn"
-    appliedJob.studentAction = "Withdrawn";
+    // ✅ Update the `status`
+    appliedJob.status = updateStatus; // ✅ Update status inside applicationDetails
     await appliedJob.save();
 
-    res.status(200).json({ message: "Application withdrawn successfully!", appliedJob });
+    res.status(200).json({ message: "Application status updated successfully!", appliedJob });
   } catch (err) {
-    console.error("Failed to withdraw application:", err);
+    console.error("Failed to update application status:", err);
     res.status(500).json({ message: "Internal Server Error", error: err.message });
   }
 });
-
-
-
-
 
 
 // **PUT/UPDATE **where the id is the applied id not the jobid**
@@ -251,6 +247,34 @@ router.put("/:id", upload.single("file"), async (req, res) => {
     }
   }
 });
+
+
+// **DELETE - Remove an Applied Job**
+router.delete("/:appliedId", async (req, res) => {
+  const { appliedId } = req.params; // ✅ Extract appliedId from request params
+
+  try {
+    // ✅ Validate MongoDB ID format
+    if (!mongoose.Types.ObjectId.isValid(appliedId)) {
+      return res.status(400).json({ message: "Invalid applied job ID format" });
+    }
+
+    // ✅ Check if the applied job exists
+    const appliedJob = await AppliedJobs.findById(appliedId);
+    if (!appliedJob) {
+      return res.status(404).json({ message: "Applied Job Not Found!" });
+    }
+
+    // ✅ Delete the applied job
+    await AppliedJobs.findByIdAndDelete(appliedId);
+
+    res.status(200).json({ message: "Applied job deleted successfully!" });
+  } catch (err) {
+    console.error("Failed to delete applied job:", err);
+    res.status(500).json({ message: "Internal Server Error", error: err.message });
+  }
+});
+
 
 
 
