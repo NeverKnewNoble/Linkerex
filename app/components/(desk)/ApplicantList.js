@@ -7,74 +7,80 @@ import ApplicantCard from "./ApplicantCard";
 import Loading from "../../loading";
 
 const ApplicantList = () => {
-  const [cardInfo, setCardInfo] = useState([]); // ✅ Store merged data
-  const { data: session } = useSession(); // ✅ Get logged-in user session
-  const [loading, setLoading] = useState(true); // ✅ Loading state
+  const [cardInfo, setCardInfo] = useState([]);
+  const { data: session } = useSession();
+  const [loading, setLoading] = useState(true);
 
-  const fetchApplicantCardInfo = async () => {
-    try {
-      setLoading(true);
-
-      // Fetch Applied Jobs
-      const appliedJobsResponse = await axios.get("http://localhost:5000/api/applied");
-      const appliedJobs = appliedJobsResponse.data;
-
-      // Fetch Users
-      const userResponse = await axios.get("http://localhost:5000/api/users");
-      const users = userResponse.data;
-
-      //  Fetch Job Details
-      const jobResponse = await axios.get("http://localhost:5000/api/jobs");
-      const jobList = jobResponse.data; //  Renamed to avoid conflict
-
-      //  Filter applied jobs created by the logged-in user & submitted
-      const SpecificToCreater = appliedJobs.filter(
-        (appliedJob) => appliedJob.createdBy === session?.user?.id && appliedJob.studentAction === "Submitted"
-      );
-
-      // Merge applied jobs with user info and job details
-      const mergedInfo = SpecificToCreater.map((appliedJob) => {
-        const userInfo = users.find(info => info._id === appliedJob.studentId) || {}; 
-        const jobInfo = jobList.find(info => info._id === appliedJob.jobId) || {}; // ✅ Fixed .find()
-
-        return {
-          ...appliedJob, // Applied job details
-          appliedId: appliedJob._id, // Preserve applied job ID
-          ...userInfo, // Student details
-          ...jobInfo, // Job Details
-        };
-      });
-
-      // Update state with merged data
-      setCardInfo(mergedInfo);
-    } catch (err) {
-      console.error("Failed to fetch data:", err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fetch data on mount or when session changes
   useEffect(() => {
+    const fetchApplicantCardInfo = async () => {
+      try {
+        setLoading(true);
+
+        const appliedJobsResponse = await axios.get("http://localhost:5000/api/applied");
+        const appliedJobs = appliedJobsResponse.data;
+
+        const userResponse = await axios.get("http://localhost:5000/api/users");
+        const users = userResponse.data;
+
+        const jobResponse = await axios.get("http://localhost:5000/api/jobs");
+        const jobList = jobResponse.data;
+
+        const SpecificToCreater = appliedJobs.filter(
+          (appliedJob) => appliedJob.createdBy === session?.user?.id && appliedJob.studentAction === "Submitted"
+        );
+
+        const mergedInfo = SpecificToCreater.map((appliedJob) => {
+          const userInfo = users.find(info => info._id === appliedJob.studentId) || {};
+          const jobInfo = jobList.find(info => info._id === appliedJob.jobId) || {};
+
+          return {
+            ...appliedJob,
+            appliedId: appliedJob._id,
+            ...userInfo,
+            ...jobInfo,
+          };
+        });
+
+        setCardInfo(mergedInfo);
+        
+        // ✅ Store count in sessionStorage so it's available for Dashboard
+        sessionStorage.setItem("applicantCount", mergedInfo.length.toString());
+
+      } catch (err) {
+        console.error("Failed to fetch data:", err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (session?.user?.id) {
       fetchApplicantCardInfo();
     }
   }, [session]);
 
-  if (loading) return <Loading />; // Show loading while fetching data
+  if (loading) return <Loading />;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
-      {cardInfo.map((applicant, index) => (
-        <ApplicantCard
-          key={index}
-          appliedId={applicant.appliedId}
-          name={applicant.username}
-          email={applicant.email}
-          jobCategory={applicant.category}
-          jobTitle={applicant.title}
-        />
-      ))}
+    <div className="p-4">
+      {cardInfo.length === 0 ? (
+        <div className="text-center border border-gray-300 bg-white text-black text-[50px] py-[100px] rounded-lg mt-20 mx-[5px] font-semibold">
+          No Applications Sent.
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {cardInfo.map((applicant, index) => (
+            <ApplicantCard
+              key={index}
+              status={applicant.status}
+              appliedId={applicant.appliedId}
+              name={applicant.username}
+              email={applicant.email}
+              jobCategory={applicant.category}
+              jobTitle={applicant.title}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

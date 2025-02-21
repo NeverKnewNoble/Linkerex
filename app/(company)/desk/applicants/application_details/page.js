@@ -8,6 +8,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
+import { Alert } from "@nextui-org/react";
 
 export default function Applicants() {
   const [applicantDetails, setApplicantDetails] = useState(null);
@@ -16,6 +17,7 @@ export default function Applicants() {
   const searchParams = useSearchParams(); // Get URL parameters
   const appliedId = searchParams.get("id");
   const [status, setStatus] = useState(""); // ✅ Track application status
+  const [alert, setAlert] = useState(null);
 
   useEffect(() => {
     if (!appliedId) return;
@@ -58,6 +60,7 @@ export default function Applicants() {
 
       } catch (err) {
         console.error("Failed to fetch data:", err.message);
+        setAlert({ color: "danger", message: "Failed to update Status. Please try again." });
       } finally {
         setLoading(false);
       }
@@ -78,13 +81,13 @@ export default function Applicants() {
       const response = await axios.put(`http://localhost:5000/api/applied/${appliedId}/${status}`);
   
       if (response.status === 200) {
-        alert("Application status updated successfully!");
+        setAlert({ color: "success", message: "Status updated successfully!" });
       } else {
-        alert("Failed to update application status.");
+        setAlert({ color: "danger", message: "Failed to update Status. Please try again." });
       }
     } catch (error) {
       console.error("Error updating application status:", error);
-      alert("Error updating application status.");
+      setAlert({ color: "danger", message: "Failed to update Status. Please try again." });
     }
   };  
 
@@ -103,6 +106,21 @@ export default function Applicants() {
       className="min-h-screen bg-cover bg-center flex items-center justify-center p-6"
       style={{ backgroundImage: "url('/linkerex/inf.jpg')" }}
     >
+      {/* Alert Popup */}
+      {alert && (
+        <div className="fixed top-4 right-4 z-50">
+          <Alert
+            color={alert.color}
+            variant="flat"
+            onClose={() => setAlert(null)}
+            className="shadow-lg"
+          >
+            {alert.message}
+          </Alert>
+        </div>
+      )}
+      
+      {/* Main Content */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
