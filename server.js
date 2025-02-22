@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const cors = require("cors"); // Import CORS middleware
 require("dotenv").config(); // Load environment variables
 
+const path = require("path"); //! call path
+
 
 // ! Import Routes 
 const userRoutes = require("./routes/UserRoutes");
@@ -60,6 +62,8 @@ app.prepare()
     server.use("/api/users", userRoutes);
     server.use("/api/jobs", jobRoutes); // Ensure this matches the imported name
     server.use("/api/applied", appliedJobRoutes);
+    // Serve static files from the uploads directory
+    server.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 
     // Handle all other routes with Next.js

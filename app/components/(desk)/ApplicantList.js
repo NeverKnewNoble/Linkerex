@@ -46,6 +46,23 @@ const ApplicantList = () => {
         // ✅ Store count in sessionStorage so it's available for Dashboard
         sessionStorage.setItem("applicantCount", mergedInfo.length.toString());
 
+        //  **Properly filter mergedInfo for each status
+        sessionStorage.setItem("pendingCardCount", 
+          mergedInfo.filter(job => job.status === "Pending").length.toString()
+        );
+
+        sessionStorage.setItem("interviewCardCount", 
+          mergedInfo.filter(job => job.status === "Interview Scheduled").length.toString()
+        );
+
+        sessionStorage.setItem("acceptedCardCount", 
+          mergedInfo.filter(job => job.status === "Accepted").length.toString()
+        );
+
+        sessionStorage.setItem("rejectedCardCount", 
+          mergedInfo.filter(job => job.status === "Rejected").length.toString()
+        );
+
       } catch (err) {
         console.error("Failed to fetch data:", err.message);
       } finally {

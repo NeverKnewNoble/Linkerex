@@ -36,6 +36,9 @@ export default function JobList() {
           console.log("Filtered Jobs:", filteredJobs);
           setJobs(filteredJobs);
         }
+
+        // ✅ Store count in sessionStorage so it's available for Dashboard
+        sessionStorage.setItem("JobsCount", setJobs.length.toString());
       } catch (err) {
         console.error("Error fetching jobs:", err.message);
       }

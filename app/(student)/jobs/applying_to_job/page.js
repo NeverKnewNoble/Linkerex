@@ -8,13 +8,14 @@ import { Icon } from "@iconify/react";
 import Loading from "../../../loading";
 import { useSession } from "next-auth/react";
 
+
 const ApplyingToJobs = () => {
   const searchParams = useSearchParams();
   const jobId = searchParams.get("id"); // Get the job ID from the URL
   const [jobDetails, setJobDetails] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [coverLetter, setCoverLetter] = useState(""); // State for cover letter
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [alert, setAlert] = useState(null); // Define alert state
   const [isSubmitted, setIsSubmitted] = useState(false); // Track form submission status
   const [appliedData, setAppliedData] = useState(null); // Store applied job data
@@ -252,7 +253,7 @@ const ApplyingToJobs = () => {
               className="w-full font-white"
               value={coverLetter}
               onChange={handleCoverLetterChange}
-              isDisabled={isSubmitted}
+              isDisabled={isSubmitted || session.user.account_type === "company" || status === "unauthenticated"}
             />
           </div>
 
@@ -268,6 +269,7 @@ const ApplyingToJobs = () => {
               </Button>
             ) : (
               <Button
+                isDisabled={session.user.account_type === "company" || status === "unauthenticated"}
                 color="primary"
                 className="w-full bg-blue-600 text-white hover:bg-blue-700 font-semibold"
                 onClick={handleSubmit}

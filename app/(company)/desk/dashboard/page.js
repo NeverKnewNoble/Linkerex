@@ -8,10 +8,26 @@ import { FaBriefcase, FaUserCheck, FaCalendarCheck, FaTimesCircle, FaUserPlus } 
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const [applicantCount, setApplicantCount] = useState(0);
+  const [jobCount, SetJobsCount] = useState(0);
+  const [pendingCount, setPendingCount] = useState(0);
+  const [interviewCount, setInterviewCount] = useState(0);
+  const [acceptedCount, setAcceptedCount] = useState(0);
+  const [rejectedCount, setRejectedCount] = useState(0);
 
   useEffect(() => {
     const count = sessionStorage.getItem("applicantCount") || "0";
+    const JobsCount = sessionStorage.getItem("JobsCount") || "0";
+    SetJobsCount(parseInt(JobsCount));
     setApplicantCount(parseInt(count));
+
+    if (typeof window !== "undefined") { // Ensure code runs only in the browser
+      setApplicantCount(sessionStorage.getItem("applicantCount") || "0");
+      setPendingCount(sessionStorage.getItem("pendingCardCount") || "0");
+      setInterviewCount(sessionStorage.getItem("interviewCardCount") || "0");
+      setAcceptedCount(sessionStorage.getItem("acceptedCardCount") || "0");
+      setRejectedCount(sessionStorage.getItem("rejectedCardCount") || "0");
+    }
+
   }, []);
 
   if (status === "loading") {
@@ -32,7 +48,7 @@ export default function Dashboard() {
           <div className="bg-gradient-to-tr from-gray-800 to-gray-700 text-white rounded-lg p-6 shadow-xl transform hover:scale-105 transition-all duration-300">
             <FaBriefcase className="text-5xl text-gray-200 mb-4" />
             <h2 className="text-2xl font-semibold">Listed Jobs</h2>
-            <p className="text-5xl font-bold mt-2">0</p>
+            <p className="text-5xl font-bold mt-2">{jobCount}</p>
           </div>
 
           {/* Applications */}
@@ -57,25 +73,25 @@ export default function Dashboard() {
             <div className="flex items-center justify-between bg-yellow-500/20 text-yellow-300 py-5 px-6 rounded-lg shadow-md transform hover:scale-105 transition-all">
               <FaUserCheck className="text-4xl" />
               <span className="text-lg font-bold">Pending</span>
-              <span className="text-3xl font-bold">0</span>
+              <span className="text-3xl font-bold">{pendingCount}</span>
             </div>
 
             <div className="flex items-center justify-between bg-blue-500/20 text-blue-300 py-5 px-6 rounded-lg shadow-md transform hover:scale-105 transition-all">
               <FaCalendarCheck className="text-4xl" />
               <span className="text-lg font-bold">Interview</span>
-              <span className="text-3xl font-bold">0</span>
+              <span className="text-3xl font-bold">{interviewCount}</span>
             </div>
 
             <div className="flex items-center justify-between bg-green-500/20 text-green-300 py-5 px-6 rounded-lg shadow-md transform hover:scale-105 transition-all">
               <FaUserCheck className="text-4xl" />
               <span className="text-lg font-bold">Accepted</span>
-              <span className="text-3xl font-bold">0</span>
+              <span className="text-3xl font-bold">{acceptedCount}</span>
             </div>
 
             <div className="flex items-center justify-between bg-red-500/20 text-red-300 py-5 px-6 rounded-lg shadow-md transform hover:scale-105 transition-all">
               <FaTimesCircle className="text-4xl" />
               <span className="text-lg font-bold">Rejected</span>
-              <span className="text-3xl font-bold">0</span>
+              <span className="text-3xl font-bold">{rejectedCount}</span>
             </div>
           </div>
         </div>
@@ -88,3 +104,9 @@ export default function Dashboard() {
     </div>
   );
 }
+
+
+
+
+
+
