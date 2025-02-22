@@ -70,9 +70,9 @@ const Jobs = () => {
 
   return (
     <div className="w-full h-auto bg-white">
-      <section className="pt-10 pb-8 bg-white">
-        <div className="container mx-auto px-6">
-          <h1 className="font-bold text-5xl text-gray-800 mb-6">Jobs</h1>
+      <section className="pt-10  bg-white">
+        <div className="container mx-auto px-[70px]">
+          <h1 className="font-bold text-[70px] text-gray-800 mb-4">Jobs</h1>
 
           {/* Search Section */}
           <div className="flex items-center gap-4">

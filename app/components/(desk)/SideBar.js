@@ -56,6 +56,9 @@ const Sidebar = () => {
                 <p className="font-bold">Signed in as</p>
                 <p className="font-bold">{session.user.email}</p>
               </DropdownItem>
+              <DropdownItem key="home" onClick={() => (window.location.href = "/")}>
+                Home
+              </DropdownItem>
               <DropdownItem key="company_details" onClick={() => (window.location.href = "/desk/company_details")}>
                 Company Details
               </DropdownItem>
