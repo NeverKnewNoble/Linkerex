@@ -200,11 +200,11 @@ const ApplyingToJobs = () => {
           <div className="space-y-4">
             <div>
               <h4 className="text-lg font-semibold mb-2">Description</h4>
-              <p className="text-gray-200 pl-5">{jobDetails.description}</p>
+              <p className="whitespace-pre-line text-gray-200 pl-5">{jobDetails.description}</p>
             </div>
             <div>
               <h4 className="text-lg font-semibold mb-2">Requirements</h4>
-              <p className="text-gray-200 pl-5">{jobDetails.requirements}</p>
+              <p className="whitespace-pre-line text-gray-200 pl-5">{jobDetails.requirements}</p>
             </div>
           </div>
         </Card>
@@ -253,28 +253,24 @@ const ApplyingToJobs = () => {
               className="w-full font-white"
               value={coverLetter}
               onChange={handleCoverLetterChange}
-              isDisabled={isSubmitted || session.user.account_type === "company" || status === "unauthenticated"}
+              isDisabled={isSubmitted || session?.user?.account_type === "company" || status === "unauthenticated"}
             />
           </div>
 
           {/* Submit Proposal Button */}
           <div className="flex justify-center">
             {isSubmitted ? (
-              <Button
-                isDisabled
-                color="success"
-                className="w-full bg-green-600 text-white hover:bg-green-700 font-semibold"
-              >
+              <Button isDisabled color="success" className="w-full bg-green-600 text-white hover:bg-green-700 font-semibold">
                 Application Submitted
               </Button>
             ) : (
               <Button
-                isDisabled={session.user.account_type === "company" || status === "unauthenticated"}
+                isDisabled={status === "unauthenticated" || session?.user?.account_type === "company"}
                 color="primary"
                 className="w-full bg-blue-600 text-white hover:bg-blue-700 font-semibold"
                 onClick={handleSubmit}
               >
-                Submit Proposal
+                {status === "unauthenticated" ? "Login To Apply" : "Submit Proposal"}
               </Button>
             )}
           </div>
@@ -285,3 +281,6 @@ const ApplyingToJobs = () => {
 };
 
 export default ApplyingToJobs;
+
+
+

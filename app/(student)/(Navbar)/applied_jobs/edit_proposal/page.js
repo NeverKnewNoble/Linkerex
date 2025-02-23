@@ -25,29 +25,22 @@ const EditingProposal = () => {
 
   // **Fetch job details and applied job data
   useEffect(() => {
-    if (jobId && session?.user?.id) {
+    if (jobId && appliedId && session?.user?.id) { // ✅ Check all values before fetching
       const fetchData = async () => {
         try {
-          setIsLoading(true); // Start loading
-
+          setIsLoading(true);
+  
+          console.log("Fetching job details for ID:", jobId);
+          console.log("Fetching applied job data for Applied ID:", appliedId);
+  
           // Fetch job details
           const jobResponse = await axios.get(`http://localhost:5000/api/jobs/${jobId}`);
           setJobDetails(jobResponse.data);
-
+  
           // Fetch applied job data for the current user and job
           const appliedResponse = await axios.get(`http://localhost:5000/api/applied/${appliedId}`);
-          const appliedJob = appliedResponse.data;
-
-
-          if (appliedJob) {
-            setAppliedData(appliedJob);
-            setCoverLetter(appliedJob.applicationDetails?.coverLetter || ""); // Populate cover letter
-          } else {
-            setAlert({
-              color: "danger",
-              message: "No application found for this job.",
-            });
-          }
+          setAppliedData(appliedResponse.data);
+          setCoverLetter(appliedResponse.data.applicationDetails?.coverLetter || "");
         } catch (err) {
           console.error("Failed to fetch data:", err.message);
           setAlert({
@@ -55,13 +48,14 @@ const EditingProposal = () => {
             message: "Failed to fetch data. Please try again later.",
           });
         } finally {
-          setIsLoading(false); // Stop loading
+          setIsLoading(false);
         }
       };
-
+  
       fetchData();
     }
-  }, [jobId, session]);
+  }, [jobId, appliedId, session]);
+  
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -111,13 +105,17 @@ const EditingProposal = () => {
     }
   };
 
-  // ? Add a confirmation dialog before withdrawing the submission
-  if (!jobId || !userId) {
+  // ? UI When Parameter isnt provided
+  if (!jobId || !appliedId || !session?.user?.id) {
     return (
       <div className="min-h-screen bg-cover bg-center flex items-center justify-center p-4">
         <div className="w-full max-w-4xl bg-white rounded-lg shadow-lg p-8 text-center">
           <h2 className="text-2xl font-bold mb-4">Invalid Request</h2>
-          <p className="text-gray-600">Job ID or user session is missing.</p>
+          <p className="text-gray-600">
+            Job ID: {jobId || "Not Provided"} <br />
+            Applied ID: {appliedId || "Not Provided"} <br />
+            User ID: {session?.user?.id || "Not Logged In"}
+          </p>
         </div>
       </div>
     );
@@ -128,7 +126,7 @@ const EditingProposal = () => {
     return <Loading />;
   }
 
-  // ? Add a confirmation dialog before withdrawing the submission
+  // ? UI When There Is NO Data IN the Call
   if (!jobDetails || !appliedData) {
     return (
       <div className="min-h-screen bg-cover bg-center flex items-center justify-center p-4">
@@ -230,7 +228,7 @@ const EditingProposal = () => {
 
           {/* Cover Letter Section */}
           <div className="mb-6">
-            <label className="block text-lg font-semibold mb-2">Cover Letter</label>
+            <label className="whitespace-pre-line block text-lg font-semibold mb-2">Cover Letter</label>
             <Textarea
               placeholder="Write your cover letter here..."
               minRows={5}

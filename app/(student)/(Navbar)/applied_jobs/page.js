@@ -230,7 +230,7 @@ const AppliedJobs = () => {
                             Copy Job Link
                           </DropdownItem>
                           <DropdownItem key="edit" showDivider>
-                            <Link href={`/applied_jobs/edit_proposal?id=${job.jobId}`}>
+                            <Link href={`/applied_jobs/edit_proposal?id=${job.jobId}&appliedId=${job.appliedId}`} passHref>
                               Edit Proposal
                             </Link>
                           </DropdownItem>

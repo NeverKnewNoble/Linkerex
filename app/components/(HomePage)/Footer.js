@@ -38,32 +38,18 @@ const Footer = () => {
             </ul>
           </div>
 
-
-          {/* Solutions */}
-          <div>
-            <h4 className="text-white font-semibold mb-4">Solutions</h4>
-            <ul className="space-y-2 text-sm">
-              <li>Marketing</li>
-              <li>Analytics</li>
-              <li>Automation</li>
-            </ul>
-          </div>
-
-
           {/* Legal */}
           <div>
             <h4 className="text-white font-semibold mb-4">Legal</h4>
             <ul className="space-y-2 text-sm">
               <li>Terms of service</li>
-              <li>Privacy policy</li>
-              <li>License</li>
             </ul>
           </div>
         </div>
 
         {/* Bottom Section */}
         <div className="border-t border-gray-700 mt-8 pt-4 text-center text-sm">
-          © 2024 Your Company, Inc. All rights reserved.
+          © 2024 Linkerex, Inc. All rights reserved.
         </div>
       </div>
     </footer>
