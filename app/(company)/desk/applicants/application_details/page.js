@@ -200,7 +200,7 @@ export default function Applicants() {
 
               {/* Cover Letter Section */}
               <div>
-                <h4 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <h4 className="whitespace-pre-line text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   Cover Letter
                 </h4>
                 <Textarea

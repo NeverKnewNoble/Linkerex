@@ -279,6 +279,7 @@ export default function CreateJob() {
             </label>
             <textarea
               id="description"
+              minRows={8}
               placeholder="Enter job description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -293,6 +294,7 @@ export default function CreateJob() {
             </label>
             <textarea
               id="requirements"
+              minRows={8}
               placeholder="Enter job requirements"
               value={requirements}
               onChange={(e) => setRequirements(e.target.value)}

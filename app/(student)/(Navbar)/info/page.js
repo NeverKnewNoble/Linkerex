@@ -68,12 +68,12 @@ const Info = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-br from-gray-900 to-black"
+      className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 bg-gradient-to-br from-gray-900 to-black"
     >
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="w-full max-w-[1200px] bg-white/90 dark:bg-gray-800 rounded-lg shadow-lg p-8"
+        className="w-full max-w-[1200px] bg-white/90 dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-8"
       >
         {alert && (
           <Alert color={alert.type === "success" ? "success" : "error"} className="mb-4">
@@ -81,34 +81,38 @@ const Info = () => {
           </Alert>
         )}
 
-        <h1 className="text-center text-4xl font-bold text-black dark:text-white">My Information</h1>
+        <h1 className="text-center text-2xl sm:text-4xl font-bold text-black dark:text-white">
+          My Information
+        </h1>
 
-        <div className="flex flex-col lg:flex-row items-start justify-between w-full gap-10 mt-6">
+        <div className="flex flex-col lg:flex-row items-start justify-between w-full gap-6 mt-6">
           {/* Profile Card */}
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="bg-gray-900 text-white w-full lg:w-1/3 rounded-lg shadow-lg p-6 flex flex-col items-center"
+            className="bg-gray-900 text-white w-full lg:w-1/3 rounded-lg shadow-lg p-4 sm:p-6 flex flex-col items-center"
           >
             <Image
               src="/linkerex/user1.png"
               alt="User Avatar"
-              width={200}
-              height={200}
+              width={150}
+              height={150}
               className="rounded-full shadow-lg"
             />
-            <p className="text-xl font-bold mt-4">{formData.username}</p>
-            <p className="text-gray-400">{session.user.account_type || "User"}</p>
+            <p className="text-lg sm:text-xl font-bold mt-4">{formData.username}</p>
+            <p className="text-gray-400 text-sm sm:text-base">
+              {session.user.account_type || "User"}
+            </p>
           </motion.div>
 
           {/* Information Form */}
           <motion.div
             initial={{ x: 30, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            className="w-full lg:w-2/3 bg-gray-900 text-white rounded-lg shadow-lg p-6"
+            className="w-full lg:w-2/3 bg-gray-900 text-white rounded-lg shadow-lg p-4 sm:p-6"
           >
             <Form
-              className="space-y-6"
+              className="space-y-4 sm:space-y-6"
               onSubmit={(e) => {
                 e.preventDefault();
                 updateUserInfo();
@@ -140,7 +144,7 @@ const Info = () => {
                 className="text-white"
               />
 
-              <div className="flex gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button color="primary" auto type="submit">
                   Save Changes
                 </Button>
@@ -169,10 +173,12 @@ const Info = () => {
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
             exit={{ scale: 0.8 }}
-            className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg w-full max-w-md text-black dark:text-white"
+            className="bg-white dark:bg-gray-900 p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-md text-black dark:text-white"
           >
             <h2 className="text-xl font-bold">Confirm Deletion</h2>
-            <p className="mt-2">Are you sure you want to delete your account? This action cannot be undone.</p>
+            <p className="mt-2">
+              Are you sure you want to delete your account? This action cannot be undone.
+            </p>
             <div className="flex justify-end gap-4 mt-6">
               <Button onClick={() => setShowModal(false)} className="bg-gray-300 dark:bg-gray-700">
                 Cancel
