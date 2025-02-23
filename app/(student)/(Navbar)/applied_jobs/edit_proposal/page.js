@@ -183,11 +183,11 @@ const EditingProposal = () => {
           <div className="space-y-4">
             <div>
               <h4 className="text-lg font-semibold mb-2">Description</h4>
-              <p className="text-gray-200 pl-5">{jobDetails.description}</p>
+              <p className="whitespace-pre-line text-gray-200 pl-5">{jobDetails.description}</p>
             </div>
             <div>
               <h4 className="text-lg font-semibold mb-2">Requirements</h4>
-              <p className="text-gray-200 pl-5">{jobDetails.requirements}</p>
+              <p className="whitespace-pre-line text-gray-200 pl-5">{jobDetails.requirements}</p>
             </div>
           </div>
         </Card>
