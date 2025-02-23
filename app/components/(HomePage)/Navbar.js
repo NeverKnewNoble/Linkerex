@@ -205,14 +205,14 @@ export default function App() {
         ) : (
           // If the user is logged out, show login and signup buttons
           <>
-            <NavbarItem className="hidden lg:flex">
+            <NavbarItem>
               <Link href={"/login"} passHref legacyBehavior>
                 <Button variant="flat" className="text-white border bg-black hover:bg-[#2f71c7] hover:text-white font-semibold hover:border-[#2f71c7]">
                   LOGIN
                 </Button>
               </Link>
             </NavbarItem>
-            <NavbarItem>
+            <NavbarItem  className="hidden lg:flex">
               <Link href={"/sign_up"} passHref legacyBehavior>
                 <Button color="primary" variant="flat" className="border hover:text-white hover:bg-black bg-[#18181b] text-white font-semibold">
                   SIGN UP

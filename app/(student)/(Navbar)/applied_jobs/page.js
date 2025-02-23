@@ -231,7 +231,7 @@ const AppliedJobs = () => {
                           </DropdownItem>
                           <DropdownItem key="edit" showDivider>
                             <Link href={`/applied_jobs/edit_proposal?id=${job.jobId}&appliedId=${job.appliedId}`} passHref>
-                              Edit Proposal
+                              <div className="w-full py-2 ">Edit Proposal</div>
                             </Link>
                           </DropdownItem>
                           <DropdownItem key="delete" onPress={() => withdrawApplication(job.appliedId)} color="danger">
