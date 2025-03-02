@@ -3,14 +3,16 @@ const next = require("next");
 const mongoose = require("mongoose");
 const cors = require("cors"); // Import CORS middleware
 require("dotenv").config(); // Load environment variables
-
+// require("dotenv").config({ path: ".env.local" }); // Load .env.local file
 const path = require("path"); //! call path
+
 
 
 // ! Import Routes 
 const userRoutes = require("./routes/UserRoutes");
 const jobRoutes = require("./routes/JobRoutes");
 const appliedJobRoutes = require("./routes/AppliedJobRoutes");
+
 
 
 const dev = process.env.NODE_ENV !== "production";
@@ -62,6 +64,7 @@ app.prepare()
     server.use("/api/users", userRoutes);
     server.use("/api/jobs", jobRoutes); // Ensure this matches the imported name
     server.use("/api/applied", appliedJobRoutes);
+  
     // Serve static files from the uploads directory
     server.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
