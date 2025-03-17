@@ -26,10 +26,10 @@ const ApplyingToJobs = () => {
     if (jobId) {
       const fetchJobDetails = async () => {
         try {
-          const response = await axios.get(`http://localhost:5000/api/jobs/${jobId}`);
+          const response = await axios.get(`/api/jobs/${jobId}`);
           setJobDetails(response.data);
         } catch (err) {
-          console.error("Failed to fetch job details:", err.message);
+          // console.error("Failed to fetch job details:", err.message);
         }
       };
 
@@ -41,7 +41,7 @@ const ApplyingToJobs = () => {
   useEffect(() => {
     const fetchAppliedData = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/applied");
+        const response = await axios.get("/api/applied");
         const appliedJobs = response.data;
 
         // Find the job where jobId and studentId match
@@ -58,7 +58,7 @@ const ApplyingToJobs = () => {
           setCoverLetter(appliedJob.coverLetter); // Pre-fill the cover letter
         }
       } catch (err) {
-        console.error("Failed to fetch applied data:", err.message);
+        // console.error("Failed to fetch applied data:", err.message);
       }
     };
 
@@ -97,66 +97,52 @@ const ApplyingToJobs = () => {
   const handleSubmit = async () => {
     try {
       if (!selectedFile) {
-        setAlert({
-          color: "danger",
-          message: "Please upload a CV.",
-        });
+        setAlert({ color: "danger", message: "Please upload a CV." });
         return;
       }
-
+  
       if (!coverLetter) {
-        setAlert({
-          color: "danger",
-          message: "Please write a cover letter.",
-        });
+        setAlert({ color: "danger", message: "Please write a cover letter." });
         return;
       }
-
+  
       // Create a FormData object
       const formData = new FormData();
       formData.append("cv", selectedFile); // Append the file
-      formData.append("jobId", jobId); // Append job ID
-      formData.append("studentId", session.user.id); // Append student ID
-      formData.append("createdBy", jobDetails.createdby); // Append createdBy ID
-      formData.append("coverLetter", coverLetter); // Append cover letter
-
+      formData.append("jobId", jobId);
+      formData.append("studentId", session?.user?.id);
+      formData.append("createdBy", jobDetails?.createdby);
+      formData.append("coverLetter", coverLetter);
+  
+      // Debugging
+      // console.log("FormData being sent:", Object.fromEntries(formData));
+  
       // Send the form data to the backend
-      const response = await axios.post("http://localhost:5000/api/applied/apply", formData, {
+      const response = await axios.post("/api/applied/apply", formData, {
         headers: {
-          "Content-Type": "multipart/form-data", // Set the content type for file upload
+          "Content-Type": "multipart/form-data",
         },
       });
-
-      console.log("Application submitted:", response.data);
-
-      // Update submission status
+  
+      // console.log("✅ Application submitted:", response.data);
+  
       setIsSubmitted(true);
-
-      // Show success alert
-      setAlert({
-        color: "success",
-        message: "Application submitted successfully!",
-      });
-
-      // Clear the alert after 5 seconds
+      setAlert({ color: "success", message: "Application submitted successfully!" });
+  
       setTimeout(() => {
         setAlert(null);
       }, 5000);
     } catch (err) {
-      console.error("Failed to submit application:", err);
-
-      // Show error alert
-      setAlert({
-        color: "danger",
-        message: "Failed to submit application. Please try again.",
-      });
-
-      // Clear the alert after 5 seconds
+      // console.error("❌ Failed to submit application:", err.response?.data?.error || err.message);
+  
+      setAlert({ color: "danger", message: "Failed to submit application. Please try again." });
+  
       setTimeout(() => {
         setAlert(null);
       }, 5000);
     }
   };
+  
 
   // If in loading state, use loading screen
   if (!jobDetails) {
@@ -190,13 +176,16 @@ const ApplyingToJobs = () => {
         <Card className="mb-8 p-6">
           <h2 className="text-3xl font-bold mb-4">{jobDetails.title}</h2>
           <div className="flex items-center space-x-4 mb-4">
-            <span className="text-sm text-gray-600 bg-blue-100 px-3 py-1 rounded-full">
+            <span className="text-sm text-gray-600 font-semibold  bg-blue-100 px-3 py-1 rounded-full">
               {jobDetails.jobType}
             </span>
-            {(jobDetails.jobType === "Full-Time" || jobDetails.jobType === "Part-Time") && (
-              <span className="text-sm text-gray-200">GH₵ {jobDetails.amount}</span>
-            )}
+            <span className="text-sm text-gray-600 font-semibold  bg-blue-100 px-3 py-1 rounded-full">
+              {jobDetails.category}
+            </span>
           </div>
+          {(jobDetails.jobType === "Full-Time" || jobDetails.jobType === "Part-Time") && (
+              <div className="w-[300px] text-[18px] text-gray-200  py-1 rounded-full"><span className="font-semibold">{jobDetails.paymentTimeline}:</span> GH₵ {jobDetails.amount}</div>
+            )}
           <div className="space-y-4">
             <div>
               <h4 className="text-lg font-semibold mb-2">Description</h4>

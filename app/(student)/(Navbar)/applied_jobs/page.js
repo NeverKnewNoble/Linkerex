@@ -36,7 +36,7 @@ const AppliedJobs = () => {
       const jobs = jobsResponse.data;
 
       // Fetch applied jobs
-      const appliedResponse = await axios.get("http://localhost:5000/api/applied");
+      const appliedResponse = await axios.get("/api/applied");
       const appliedJobs = appliedResponse.data;
 
       // Filter applied jobs to show only those applied by the logged-in user and have "studentAction": "Submitted"
@@ -56,7 +56,7 @@ const AppliedJobs = () => {
 
       setAppliedJobs(mergedJobs);
     } catch (err) {
-      console.error("Failed to fetch data:", err.message);
+      // console.error("Failed to fetch data:", err.message);
     } finally {
       setLoading(false); // Stop loading after fetching
     }
@@ -103,13 +103,15 @@ const AppliedJobs = () => {
     );
   };
 
+  
   // **Copy Job Link
   const copyTextToClipboard = (jobId) => {
-    const jobLink = `http://localhost:3000/jobs/applying_to_job?id=${jobId}`;
+    const jobLink = `${window.location.origin}/jobs/applying_to_job?id=${jobId}`; // Full URL
+
     navigator.clipboard
       .writeText(jobLink)
       .then(() => {
-        console.log("Copied To Clipboard");
+        // console.log("Copied To Clipboard");
         // Show success alert
         setAlert({
           color: "success",
@@ -117,7 +119,7 @@ const AppliedJobs = () => {
         });
       })
       .catch((err) => {
-        console.error("Failed to copy to clipboard", err);
+        // console.error("Failed to copy to clipboard", err);
         // Show error alert
         setAlert({
           color: "danger",
@@ -126,13 +128,14 @@ const AppliedJobs = () => {
       });
   };
 
+
   // **Update The Applied Job Information
   const withdrawApplication = async (appliedId) => {
     try {
       // ✅ Send a DELETE request instead of PUT
-      const response = await axios.delete(`http://localhost:5000/api/applied/${appliedId}`);
+      const response = await axios.delete(`/api/applied/${appliedId}`);
   
-      console.log("Server response:", response.data); // Debugging log
+      // console.log("Server response:", response.data); // Debugging log
   
       if (response.status === 200) {
         setAlert({

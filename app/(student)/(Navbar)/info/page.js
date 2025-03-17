@@ -28,7 +28,7 @@ const Info = () => {
 
   const updateUserInfo = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/users/${session.user.id}`, {
+      const res = await fetch(`/api/users/${session.user.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -38,7 +38,7 @@ const Info = () => {
       setAlert({
         type: res.ok ? "success" : "error",
         message: res.ok
-          ? "Profile updated successfully! Changes will apply after an hour."
+          ? "Your profile has been updated successfully! Changes will take effect within an hour. If you don’t see the changes, try logging in again."
           : `Update failed: ${result.error || "Unknown error"}`,
       });
     } catch (err) {
@@ -48,7 +48,7 @@ const Info = () => {
 
   const deleteById = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/users/${session.user.id}`, {
+      const res = await fetch(`/api/users/${session.user.id}`, {
         method: "DELETE",
       });
 
@@ -70,17 +70,24 @@ const Info = () => {
       exit={{ opacity: 0 }}
       className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 bg-gradient-to-br from-gray-900 to-black"
     >
+      {/* Alert Popup */}
+      {alert && (
+        <div className="fixed top-20 right-4 z-50">
+          <Alert
+            color={alert.type === "success" ? "success" : "error"}
+            variant="flat"
+            onClose={() => setAlert(null)}
+            className="shadow-lg"
+          >
+            {alert.message}
+          </Alert>
+        </div>
+      )}
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="w-full max-w-[1200px] bg-white/90 dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-8"
       >
-        {alert && (
-          <Alert color={alert.type === "success" ? "success" : "error"} className="mb-4">
-            {alert.message}
-          </Alert>
-        )}
-
         <h1 className="text-center text-2xl sm:text-4xl font-bold text-black dark:text-white">
           My Information
         </h1>

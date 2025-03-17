@@ -63,7 +63,9 @@ const JobCard = ({
         </div>
       );
     } else if (jobType === "Full-Time" || jobType === "Part-Time") {
-      return "Apply For GH₵5";
+      // return "Apply For GH₵5";
+      return "Apply For This Job";
+
     } else if (jobType === "Internship") {
       return "Apply For This Job";
     } else {
@@ -73,7 +75,7 @@ const JobCard = ({
 
   const Pricing = () => {
     if (jobType === "Full-Time" || jobType === "Part-Time") {
-      return `GH₵${price} / ${getPricingLabel()}`;
+      return `GH₵ ${price} / ${getPricingLabel()}`;
     } else {
       return "";
     }
@@ -129,7 +131,8 @@ const JobCard = ({
             </button>
           </Link>
         ) : (
-          <Link href="/jobs/payment">
+          // <Link href="/jobs/payment">
+          <Link href={`/jobs/applying_to_job?id=${id}`}>
             <button
               className={`w-full ${
                 hasApplied ? "bg-green-600" : "bg-blue-700"

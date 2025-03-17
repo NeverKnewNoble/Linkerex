@@ -14,7 +14,7 @@ const Joblist = ({ searchQuery, filters }) => {
   // Fetch all jobs
   const fetchJobs = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/jobs");
+      const res = await axios.get("/api/jobs");
       setJobs(res.data);
     } catch (err) {
       console.error("Failed to fetch jobs:", err.message);
@@ -24,7 +24,7 @@ const Joblist = ({ searchQuery, filters }) => {
   // Fetch applied jobs for the logged-in user
   const fetchAppliedJobs = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/applied");
+      const res = await axios.get("/api/applied");
       setAppliedJobs(res.data);
     } catch (err) {
       console.error("Failed to fetch applied jobs:", err.message);
@@ -77,6 +77,8 @@ const Joblist = ({ searchQuery, filters }) => {
                   key={job._id}
                   id={job._id} // Pass the job ID
                   {...job}
+                  pricingType={job.paymentTimeline}
+                  price={job.amount}
                   appliedJobs={appliedJobs} // Pass applied jobs data
                   userId={session?.user?.id} // Pass the logged-in user ID
                 />
