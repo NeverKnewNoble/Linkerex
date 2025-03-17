@@ -91,7 +91,7 @@ export default function SignupForm() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/users",
+        "/api/users",
         userData,
         {
           headers: { "Content-Type": "application/json" },

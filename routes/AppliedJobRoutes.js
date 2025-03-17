@@ -6,8 +6,6 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 
-
-
 // ? Configure Multer for file storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -32,7 +30,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB
+  limits: { fileSize: 10 * 1024 * 1024 }, // Limit file size to 10MB
 });
 
 
@@ -104,6 +102,7 @@ router.post("/apply", upload.single("cv"), async (req, res) => {
   }
 });
 
+
 // **GET
 router.get("/", async (req, res) => {
   try {
@@ -135,53 +134,41 @@ router.get("/:appliedId", async (req, res) => {
 });
 
 
-// **PUT - Update an Specific to file and coverLetter capplied job**
+
+// **PUT - Update a Specific file and coverLetter to applied job**
 router.put("/:appliedId", upload.single("file"), async (req, res) => {
   const { appliedId } = req.params;
-  const { coverLetter } = req.body;
-  const file = req.file; // Uploaded file
-
-  try {
-    // ✅ Validate MongoDB ID format
-    if (!mongoose.Types.ObjectId.isValid(appliedId)) {
-      return res.status(400).json({ message: "Invalid applied job ID format" });
-    }
-
-    // ✅ Check if the applied job exists
-    const appliedJob = await AppliedJobs.findById(appliedId);
-    if (!appliedJob) {
-      return res.status(404).json({ message: "Applied Job Not Found!" });
-    }
-
-    // ✅ Prepare update data
-    const updateData = {
-      "applicationDetails.coverLetter": coverLetter,
-    };
-
-    // ✅ Update the file path if a new file is uploaded
-    if (file) {
-      updateData["applicationDetails.uploadedFile"] = file.path;
-    }
-
-    // ✅ Perform the update
-    const updatedJob = await AppliedJobs.findByIdAndUpdate(
-      appliedId,
-      { $set: updateData },
-      { new: true, runValidators: true }
-    );
-
-    res.status(200).json({ message: "Proposal updated successfully!", updatedJob });
-  } catch (err) {
-    console.error("Failed to update applied job:", err);
-    res.status(500).json({ message: "Internal Server Error", error: err.message });
+  if (!mongoose.Types.ObjectId.isValid(appliedId)) {
+    return res.status(400).json({ message: "Invalid applied job ID format" });
   }
+
+  let appliedJob = await AppliedJobs.findById(appliedId);
+  if (!appliedJob) {
+    return res.status(404).json({ message: "Applied Job Not Found!" });
+  }
+
+  const coverLetter = req.body.coverLetter;
+  if (!coverLetter) {
+    return res.status(400).json({ message: "Cover letter is missing." });
+  }
+
+  if (req.file) {
+    appliedJob.applicationDetails.uploadedFile = req.file.path;
+  }
+  appliedJob.applicationDetails.coverLetter = coverLetter;
+
+  await appliedJob.save();
+  res.status(200).json({ message: "Proposal updated successfully!", appliedJob });
 });
 
 
 
+
+
 // **PUT - Update application Status**
-router.put("/:appliedId/:updateStatus", async (req, res) => {
-  const { appliedId, updateStatus } = req.params; // ✅ Get appliedId and updateStatus from request params
+router.put("/:appliedId/status", async (req, res) => {
+  const { appliedId } = req.params;
+  const { updateStatus } = req.body; // ✅ Get updateStatus from request body
 
   try {
     // ✅ Validate MongoDB ID format
@@ -196,7 +183,7 @@ router.put("/:appliedId/:updateStatus", async (req, res) => {
     }
 
     // ✅ Update the `status`
-    appliedJob.status = updateStatus; // ✅ Update status inside applicationDetails
+    appliedJob.status = updateStatus;
     await appliedJob.save();
 
     res.status(200).json({ message: "Application status updated successfully!", appliedJob });
@@ -205,6 +192,7 @@ router.put("/:appliedId/:updateStatus", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error", error: err.message });
   }
 });
+
 
 
 // **PUT/UPDATE **where the id is the applied id not the jobid**

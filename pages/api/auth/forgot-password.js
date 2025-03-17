@@ -41,7 +41,7 @@ export default async function handler(req, res) {
     expiresAt: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes expiry
   });
 
-  const resetLink = `http://localhost:3000/reset_password?token=${token}`;
+  const resetLink = `${process.env.FRONTEND_URL}/reset_password?token=${token}`;
 
   // Configure nodemailer transport
   const transporter = nodemailer.createTransport({

@@ -3,7 +3,6 @@ const next = require("next");
 const mongoose = require("mongoose");
 const cors = require("cors"); // Import CORS middleware
 require("dotenv").config(); // Load environment variables
-// require("dotenv").config({ path: ".env.local" }); // Load .env.local file
 const path = require("path"); //! call path
 
 
@@ -18,8 +17,7 @@ const appliedJobRoutes = require("./routes/AppliedJobRoutes");
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
-const PORT = 5000; // Port for Express server
-
+const PORT = process.env.PORT // const PORT = 5000; // Port for Express server
 
 // ! Function to connect to MongoDB
 const connectDb = async () => {
@@ -45,7 +43,7 @@ app.prepare()
 
     // Enable CORS for all routes
     server.use(cors({
-      origin: "http://localhost:3000", // Replace with your frontend URL
+      origin: process.env.FRONTEND_CORE_URL, // Replace with your frontend URL
       methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
       credentials: true, // Allow cookies and authentication headers
     }));

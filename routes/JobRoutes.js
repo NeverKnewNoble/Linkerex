@@ -78,6 +78,9 @@ router.get("/", async (req, res) => {
 //? 3. Update a Job
 router.put("/:id", async (req, res) => {
   try {
+
+    console.log("🔄 Update Request Received:", req.params.id, req.body);
+
     const job = await Job.findByIdAndUpdate(req.params.id, req.body, {
       new: true, // Return the updated document
       runValidators: true, // Ensure validation rules are applied

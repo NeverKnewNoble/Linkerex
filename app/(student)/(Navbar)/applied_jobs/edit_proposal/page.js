@@ -30,19 +30,19 @@ const EditingProposal = () => {
         try {
           setIsLoading(true);
   
-          console.log("Fetching job details for ID:", jobId);
-          console.log("Fetching applied job data for Applied ID:", appliedId);
+          // console.log("Fetching job details for ID:", jobId);
+          // console.log("Fetching applied job data for Applied ID:", appliedId);
   
           // Fetch job details
-          const jobResponse = await axios.get(`http://localhost:5000/api/jobs/${jobId}`);
+          const jobResponse = await axios.get(`/api/jobs/${jobId}`);
           setJobDetails(jobResponse.data);
   
           // Fetch applied job data for the current user and job
-          const appliedResponse = await axios.get(`http://localhost:5000/api/applied/${appliedId}`);
+          const appliedResponse = await axios.get(`/api/applied/${appliedId}`);
           setAppliedData(appliedResponse.data);
           setCoverLetter(appliedResponse.data.applicationDetails?.coverLetter || "");
         } catch (err) {
-          console.error("Failed to fetch data:", err.message);
+          // console.error("Failed to fetch data:", err.message);
           setAlert({
             color: "danger",
             message: "Failed to fetch data. Please try again later.",
@@ -60,7 +60,11 @@ const EditingProposal = () => {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
+      // console.log("File selected:", file); // Debugging
       setSelectedFile(file);
+    } else {
+      console.error("No file selected or invalid file.");
+      setSelectedFile(null);
     }
   };
 
@@ -73,37 +77,38 @@ const EditingProposal = () => {
       setAlert({ color: "danger", message: "Please fill out the cover letter." });
       return;
     }
-
+  
     setIsSubmitted(true);
     try {
       const formData = new FormData();
+      formData.append("coverLetter", coverLetter);
       if (selectedFile) {
-        formData.append("file", selectedFile); // Append the file only if a new file is selected
+        formData.append("file", selectedFile);
       }
-      formData.append("coverLetter", coverLetter); // Append the cover letter
-
+  
       const response = await axios.put(
-        `http://localhost:5000/api/applied/${appliedId}`, // ✅ Use appliedId from query
+        `/api/applied/${appliedId}`, 
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "multipart/form-data", // Required for file uploads
           },
         }
       );      
-
+  
       if (response.status === 200) {
         setAlert({ color: "success", message: "Proposal updated successfully!" });
       } else {
         setAlert({ color: "danger", message: "Failed to update proposal. Please try again." });
       }
     } catch (err) {
-      console.error("Failed to update proposal:", err.message);
+      // console.error("Failed to update proposal:", err);
       setAlert({ color: "danger", message: "Failed to update proposal. Please try again." });
     } finally {
       setIsSubmitted(false);
     }
   };
+
 
   // ? UI When Parameter isnt provided
   if (!jobId || !appliedId || !session?.user?.id) {
@@ -112,8 +117,6 @@ const EditingProposal = () => {
         <div className="w-full max-w-4xl bg-white rounded-lg shadow-lg p-8 text-center">
           <h2 className="text-2xl font-bold mb-4">Invalid Request</h2>
           <p className="text-gray-600">
-            Job ID: {jobId || "Not Provided"} <br />
-            Applied ID: {appliedId || "Not Provided"} <br />
             User ID: {session?.user?.id || "Not Logged In"}
           </p>
         </div>
@@ -177,7 +180,7 @@ const EditingProposal = () => {
               {jobDetails.jobType}
             </span>
             {(jobDetails.jobType === "Full-Time" || jobDetails.jobType === "Part-Time") && (
-              <span className="text-sm text-gray-200">GH₵ {jobDetails.amount}</span>
+              <span className="text-sm text-gray-600 bg-blue-100 px-3 py-1 rounded-full">GH₵ {jobDetails.amount}</span>
             )}
           </div>
           <div className="space-y-4">
@@ -255,15 +258,3 @@ const EditingProposal = () => {
 };
 
 export default EditingProposal;
-
-
-
-
-
-
-
-
-
-
-
-
