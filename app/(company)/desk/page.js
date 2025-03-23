@@ -1,13 +1,13 @@
 "use client";
 
 import React from "react";
-import { usePathname, useRouter } from "next/navigation";
+// import { usePathname, useRouter } from "next/navigation";
 
 const Desk = () => {
   // const pathname = usePathname();
   // const router = useRouter();
 
-  // // Dynamically render content based on pathname
+  // Dynamically render content based on pathname
   // const renderContent = () => {
   //   switch (pathname) {
   //     case "/dashboard":
@@ -25,10 +25,10 @@ const Desk = () => {
 
   return (
     <div className="flex">
-      {/* Main Content Div */}
+      {/* Main Content Div
       <div className="flex-1 p-6 bg-gray-50 rounded-lg shadow-lg ml-[250px]">
         {renderContent()}
-      </div>
+      </div> */}
     </div>
   );
 };
