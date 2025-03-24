@@ -1,28 +1,31 @@
-import axios from "axios";
+import connectDB from "@/lib/mongodb";
+import Job from "@/models/Job";
 
 export default async function handler(req, res) {
-  const { id } = req.query; // Extract job ID from URL
-  const BACKEND_URL = process.env.BACKEND_URL;
-
-  console.log("🔍 API called for job ID:", id, "Method:", req.method); // Debugging
+  await connectDB();
+  const { id } = req.query;
 
   try {
     if (req.method === "GET") {
-      const { data } = await axios.get(`${BACKEND_URL}/api/jobs/${id}`);
-      res.status(200).json(data);
-    } else if (req.method === "PUT") {
-      const { data } = await axios.put(`${BACKEND_URL}/api/jobs/${id}`, req.body);
-      res.status(200).json(data);
-    } else if (req.method === "DELETE") {
-      await axios.delete(`${BACKEND_URL}/api/jobs/${id}`);
-      res.status(204).end();
-    } else {
-      res.setHeader("Allow", ["GET", "PUT", "DELETE"]);
-      res.status(405).end(`Method ${req.method} Not Allowed`);
+      const job = await Job.findById(id);
+      return res.status(200).json(job);
     }
+
+    if (req.method === "PUT") {
+      const job = await Job.findByIdAndUpdate(id, req.body, { new: true });
+      return res.status(200).json(job);
+    }
+
+    if (req.method === "DELETE") {
+      await Job.findByIdAndDelete(id);
+      return res.status(204).end();
+    }
+
+    res.setHeader("Allow", ["GET", "PUT", "DELETE"]);
+    return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
   } catch (error) {
     console.error("❌ API error:", error.message);
-    res.status(500).json({ error: "Failed to process request" });
+    return res.status(500).json({ error: "Failed to process request" });
   }
 }
 

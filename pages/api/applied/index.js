@@ -1,12 +1,15 @@
-import axios from "axios";
+import connectDB from "@/lib/mongodb";
+import AppliedJob from "@/models/AppliedJobs";
 
 export default async function handler(req, res) {
+  await connectDB();
+
   try {
-    // Fetch from backend using private BACKEND_URL (safe!)
-    const { data } = await axios.get(`${process.env.BACKEND_URL}/api/applied`);
-    res.status(200).json(data);
+    const applications = await AppliedJob.find();
+    return res.status(200).json(applications);
   } catch (error) {
     console.error("API error:", error.message);
-    res.status(500).json({ error: "Failed to fetch jobs" });
+    return res.status(500).json({ error: "Failed to fetch applications" });
   }
 }
+
