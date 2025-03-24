@@ -272,8 +272,7 @@ export default function SignupForm() {
 
           <Checkbox isRequired className="py-4">
             I agree with the&nbsp;
-            <Link href="#">Terms</Link>&nbsp;and&nbsp;
-            <Link href="#">Privacy Policy</Link>
+            <Link href="#">Terms</Link>&nbsp;
           </Checkbox>
           <Button color="primary" type="submit">
             Sign Up
