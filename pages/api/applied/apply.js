@@ -1,7 +1,7 @@
-import axios from "axios";
-import fs from "fs";
+import path from "path";
 import formidable from "formidable";
-import FormData from "form-data"; // ✅ Explicitly import form-data
+import connectDB from "@/lib/mongodb";
+import AppliedJob from "@/models/AppliedJobs";
 
 export const config = {
   api: {
@@ -13,6 +13,8 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
+
+  await connectDB();
 
   try {
     const form = formidable({
@@ -39,22 +41,25 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "No CV uploaded." });
     }
 
-    const file = files.cv[0]; // ✅ Get the first file object
-    const fileStream = fs.createReadStream(file.filepath); // ✅ Read from correct file path
+    const file = files.cv[0];
+    const filename = path.basename(file.filepath); // Extract only the filename
+    
 
-    const formData = new FormData();
-    formData.append("cv", fileStream, file.originalFilename); // ✅ Correct filename
-    formData.append("jobId", fields.jobId[0]); // ✅ Extract values correctly
-    formData.append("studentId", fields.studentId[0]);
-    formData.append("createdBy", fields.createdBy[0]);
-    formData.append("coverLetter", fields.coverLetter[0]);
-
-    const response = await axios.post(`${process.env.BACKEND_URL}/api/applied/apply`, formData, {
-      headers: formData.getHeaders(), // ✅ Set correct headers dynamically
+    const newApplication = new AppliedJob({
+      jobId: fields.jobId[0],
+      studentId: fields.studentId[0],
+      createdBy: fields.createdBy[0],
+      applicationDetails: {
+        coverLetter: fields.coverLetter[0],
+        uploadedFile: filename, 
+      },
     });
 
-    console.log("✅ Backend Response:", response.data);
-    res.status(201).json(response.data);
+    await newApplication.save();
+
+    console.log("✅ Application saved to DB:", newApplication);
+
+    res.status(201).json({ message: "Application submitted successfully!" });
   } catch (error) {
     console.error("❌ Error applying for job:", error.message);
     res.status(500).json({ error: "Failed to submit application" });

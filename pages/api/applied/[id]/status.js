@@ -1,23 +1,28 @@
-import axios from "axios";
+import connectDB from "@/lib/mongodb";
+import AppliedJob from "@/models/AppliedJobs";
 
 export default async function handler(req, res) {
+  await connectDB();
   const { id } = req.query;
 
   if (req.method === "PUT") {
     try {
-      const { updateStatus } = req.body; // ✅ Get updateStatus from request body
+      const { updateStatus } = req.body;
 
-      const { data } = await axios.put(`${process.env.BACKEND_URL}/api/applied/${id}/status`, {
-        updateStatus, // ✅ Pass the correct field to backend
-      });
+      const updatedApplication = await AppliedJob.findByIdAndUpdate(
+        id,
+        { status: updateStatus },
+        { new: true }
+      );
 
-      res.status(200).json(data);
+      if (!updatedApplication) {
+        return res.status(404).json({ error: "Application not found" });
+      }
+
+      res.status(200).json(updatedApplication);
     } catch (error) {
-      console.error("API error:", error.response?.data || error.message);
-      res.status(error.response?.status || 500).json({
-        error: "Failed to update application status",
-        details: error.response?.data || error.message,
-      });
+      console.error("API error:", error.message);
+      res.status(500).json({ error: "Failed to update application status" });
     }
   } else {
     res.status(405).json({ error: "Method Not Allowed" });

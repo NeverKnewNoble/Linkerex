@@ -32,7 +32,7 @@ const AppliedJobs = () => {
     try {
       setLoading(true); // Show loading while fetching
       // Fetch all jobs
-      const jobsResponse = await axios.get("http://localhost:5000/api/jobs");
+      const jobsResponse = await axios.get("/api/jobs");
       const jobs = jobsResponse.data;
 
       // Fetch applied jobs
