@@ -73,21 +73,22 @@ export default function SignupForm() {
       return;
     }
 
-    if (!accountType) {
-      setAlert({ type: "danger", message: "Please select an account type!" });
-      return;
-    }
+    // ! Account type feature
+    // if (!accountType) {
+    //   setAlert({ type: "danger", message: "Please select an account type!" });
+    //   return;
+    // }
 
     const userData = {
       username,
       email,
       password,
-      account_type: accountType,
+      // account_type: accountType, // ! Account type feature
       companyName,
       companyLocation,
     };
 
-    console.log("User data being sent:", userData);
+    // console.log("User data being sent:", userData);
 
     try {
       const response = await axios.post(
@@ -108,7 +109,7 @@ export default function SignupForm() {
         setEmail("");
         setPassword("");
         setConfirmPassword("");
-        setAccountType("");
+        // setAccountType(""); // ! Account type feature
         setCompanyName("");
         setCompanyLocation("");
 
@@ -212,7 +213,9 @@ export default function SignupForm() {
               </button>
             }
           />
-          <div className="mt-2 w-full">
+
+          {/* //! Select Account type Feature */}
+          {/* <div className="mt-2 w-full">
             <label className="block text-sm font-medium text-gray-300 mb-1">
               Select Account Type
             </label>
@@ -268,11 +271,11 @@ export default function SignupForm() {
                 </div>
               </>
             )}
-          </div>
+          </div> */}
 
           <Checkbox isRequired className="py-4">
             I agree with the&nbsp;
-            <Link href="#">Terms</Link>&nbsp;
+            <Link href="#">Terms and Conditions</Link>&nbsp;
           </Checkbox>
           <Button color="primary" type="submit">
             Sign Up

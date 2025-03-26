@@ -1,4 +1,6 @@
-import connectDB from "../../lib/mongodb";
+import connectDB from "@/lib/mongodb";
+import AppliedJob from "@/models/AppliedJobs";
+import Job from "@/models/Job";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -6,27 +8,25 @@ export default async function handler(req, res) {
   }
 
   try {
-    const db = await connectDB(); // No destructuring, since connectDB now returns the database
+    await connectDB(); // Connect to MongoDB
 
-    const applicants = await db.collection("applied_jobs").countDocuments();
-    const jobs = await db.collection("jobs").countDocuments();
-    const pending = await db.collection("applied_jobs").countDocuments({ status: "Pending" });
-    const interview = await db.collection("applied_jobs").countDocuments({ status: "Interview Scheduled" });
-    const accepted = await db.collection("applied_jobs").countDocuments({ status: "Accepted" });
-    const rejected = await db.collection("applied_jobs").countDocuments({ status: "Rejected" });
+    const applicants = await AppliedJob.countDocuments();
+    const jobs = await Job.countDocuments();
+    const pending = await AppliedJob.countDocuments({ status: "Pending" });
+    const interview = await AppliedJob.countDocuments({ status: "Interview Scheduled" });
+    const accepted = await AppliedJob.countDocuments({ status: "Accepted" });
+    const rejected = await AppliedJob.countDocuments({ status: "Rejected" });
 
-
-
-    res.status(200).json({
+    return res.status(200).json({
       applicantCount: applicants,
       jobCount: jobs,
       pendingCount: pending,
       interviewCount: interview,
       acceptedCount: accepted,
-      rejectedCount: rejected
+      rejectedCount: rejected,
     });
   } catch (error) {
-    console.error("Error fetching dashboard data:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error("❌ Error fetching dashboard data:", error.message);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 }

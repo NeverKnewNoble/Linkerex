@@ -82,13 +82,16 @@ export default function App() {
             </DropdownMenu>
           </Dropdown>
         ) : (
-          // If the user is logged out, show login and signup buttons
+          // ! If the user is logged out, show login and signup buttons
           <>
             <NavbarItem>
               <Link href={"/login"} passHref legacyBehavior>
-                <Button variant="flat" className="text-white border bg-black hover:bg-[#2f71c7] hover:text-white font-semibold hover:border-[#2f71c7]">
+                {/* <Button variant="flat" className="text-white border bg-black hover:bg-[#2f71c7] hover:text-white font-semibold hover:border-[#2f71c7]">
                   LOGIN
-                </Button>
+                </Button> */}
+                <button className="border px-4 py-2 rounded-lg font-bold hover:bg-blue-600 bg-black text-white hover:border-none transition-colors ">
+                  LOGIN
+                </button>
               </Link>
             </NavbarItem>
             <NavbarItem  className="hidden lg:flex">

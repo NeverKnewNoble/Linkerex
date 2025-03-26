@@ -56,18 +56,17 @@ export default function JobList() {
 
   return (
     <div
-      className="min-h-screen bg-cover bg-center flex items-center justify-center p-4"
-      style={{
-        backgroundImage: "url('/linkerex/inf.jpg')",
-      }}
+      className="min-h-screen bg-[#18181b] bg-center flex items-center justify-center p-4"
     >
-      <div className="w-full bg-white min-h-screen mx-4 sm:mx-10 my-5 rounded-lg shadow-lg">
-        <h1 className="text-3xl sm:text-[50px] font-bold ml-4 sm:ml-8 mt-5 text-black">Job List</h1>
+      <div className="w-full bg-[#18181b] min-h-screen mx-4 sm:mx-10 my-5 rounded-lg shadow-lg">
+        <h1 className="text-3xl sm:text-[50px] font-bold ml-4 sm:ml-8 mt-5 text-white">Job List</h1>
         <div className="mt-5 px-4 sm:px-6">
-          <div className="bg-white rounded-lg p-4 sm:p-6 relative">
+          <div className="bg-[#27272b] rounded-lg p-4 sm:p-6 relative">
             <div className="flex justify-end mb-4">
               <Link href={"/desk/job_list/create-job"}>
-                <Button className="bg-black text-white hover:bg-[#2f71c7]">Add New Job</Button>
+                <button className="px-4 py-2 rounded-md font-bold bg-blue-600 text-white hover:bg-white hover:border hover:text-black transition-colors ">
+                Add New Job
+                </button>
               </Link>
             </div>
 
@@ -113,9 +112,12 @@ export default function JobList() {
                             </Button>
                           </DropdownTrigger>
                           <DropdownMenu aria-label="Actions">
-                            <DropdownItem key="edit">
+                            <DropdownItem key="edit" textValue="Edit Proposal">
                               <Link href={`/desk/job_list/edit_job?id=${job._id}`}>
+                                {/* Edit Job Listing */}
+                                <button className="px-4 py-2 w-full justify-start flex rounded-md font-bold bg-[#27272a] text-white hover:bg-white hover:border hover:text-black transition-colors ">
                                 Edit Job Listing
+                                </button>
                               </Link>
                             </DropdownItem>
                           </DropdownMenu>

@@ -11,19 +11,25 @@ export default async function handler(req, res) {
     }
 
     if (req.method === "POST") {
-      const { username, email, password, account_type, companyName, companyLocation } = req.body; 
+      // const { username, email, password, account_type, companyName, companyLocation } = req.body; //! With account type selection details 
+      const { username, email, password } = req.body; 
     
-      if (!username || !email || !password || !account_type) {
+      // if (!username || !email || !password || !account_type) {
+      //   return res.status(400).json({ error: "Username, email, password, and account type are required" });
+      // } //!With account type selection option
+    
+      if (!username || !email || !password ) {
         return res.status(400).json({ error: "Username, email, password, and account type are required" });
       }
-    
+
       const newUser = await User.create({
         username,
         email,
         password, 
-        account_type,
-        companyName,
-        companyLocation,
+        //! Acounnt type options
+        // account_type, 
+        // companyName,
+        // companyLocation,
       });
     
       return res.status(201).json(newUser);

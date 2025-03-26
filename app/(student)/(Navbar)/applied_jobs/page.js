@@ -189,36 +189,39 @@ const AppliedJobs = () => {
           <Loading /> 
         ) : appliedJobs.length === 0 ? (
           // Show "No Applied Jobs" Message
-          <div className="text-center border-gray-300 dark:border-gray-700 shadow-md bg-gray-100 dark:bg-gray-800 text-[50px] py-[200px] rounded-lg mt-10 mx-[200px] font-semibold">
+          // <div className="text-center border-gray-300 dark:border-gray-700 shadow-md bg-gray-100 dark:bg-gray-800 text-[50px] py-[200px] rounded-lg mt-10 mx-[200px] font-semibold">
+          //   No Applied Jobs Found.
+          // </div>
+          <div className="text-center border-gray-300 dark:border-gray-700 shadow-md bg-gray-100 dark:bg-gray-800 text-xl md:text-3xl lg:text-[50px] py-20 md:py-32 lg:py-[200px] rounded-lg mt-5 md:mt-10 mx-5 md:mx-20 lg:mx-[200px] font-semibold">
             No Applied Jobs Found.
           </div>
         ) : (
           // Render Table Only If There Are Applied Jobs
-          <div className="bg-white rounded-lg p-6">
+          <div className="overflow-x-auto w-full">
             <Table
               aria-label="Applied Jobs Table"
               lined
               headerLined
               shadow={false}
-              className="rounded-lg overflow-hidden"
+              className="rounded-lg overflow-hidden min-w-[600px] sm:min-w-full"
             >
               <TableHeader>
-                <TableColumn className="font-semibold text-white">Title</TableColumn>
-                <TableColumn className="font-semibold text-white">Company</TableColumn>
-                <TableColumn className="font-semibold text-white">Job Type</TableColumn>
-                <TableColumn className="font-semibold text-white">Application Status</TableColumn>
-                <TableColumn className="font-semibold text-white">Actions</TableColumn>
+                <TableColumn className="font-semibold text-white text-sm sm:text-base">Title</TableColumn>
+                <TableColumn className="font-semibold text-white text-sm sm:text-base">Company</TableColumn>
+                <TableColumn className="font-semibold text-white text-sm sm:text-base">Job Type</TableColumn>
+                <TableColumn className="font-semibold text-white text-sm sm:text-base">Application Status</TableColumn>
+                <TableColumn className="font-semibold text-white text-sm sm:text-base">Actions</TableColumn>
               </TableHeader>
               <TableBody>
                 {appliedJobs.map((job) => (
                   <TableRow
-                    key={job.appliedId} // Use job.appliedId as the unique key
+                    key={job.appliedId}
                     className="hover:bg-gray-700 transition-all duration-200 hover:text-white"
                   >
-                    <TableCell className="font-semibold">{job.title}</TableCell>
-                    <TableCell>{job.company}</TableCell>
+                    <TableCell className="font-semibold whitespace-nowrap">{job.title}</TableCell>
+                    <TableCell className="whitespace-nowrap">{job.company}</TableCell>
                     <TableCell>
-                      <Badge>{job.jobType}</Badge>
+                      <Badge className="text-xs sm:text-sm">{job.jobType}</Badge>
                     </TableCell>
                     <TableCell>{getStatusBadge(job.status)}</TableCell>
                     <TableCell>
@@ -234,7 +237,7 @@ const AppliedJobs = () => {
                           </DropdownItem>
                           <DropdownItem key="edit" showDivider>
                             <Link href={`/applied_jobs/edit_proposal?id=${job.jobId}&appliedId=${job.appliedId}`} passHref>
-                              <div className="w-full py-2 ">Edit Proposal</div>
+                              <div className="w-full py-2 text-sm sm:text-base">Edit Proposal</div>
                             </Link>
                           </DropdownItem>
                           <DropdownItem key="delete" onPress={() => withdrawApplication(job.appliedId)} color="danger">

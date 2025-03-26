@@ -129,7 +129,7 @@ export default function EditJob() {
   //? Modal Component
   const Modal = ({ onClose, onConfirm }) => {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="fixed inset-0 bg-[#18181b] bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md text-black">
           <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
           <p className="mb-6">Are you sure you want to delete this Job Listing? This action cannot be undone.</p>
@@ -153,9 +153,9 @@ export default function EditJob() {
   };
 
   return (
-    <div className="min-h-screen bg-cover bg-center flex items-center justify-center p-4">
-      <div className="w-full bg-[#1a1a1a] min-h-screen mx-4 sm:mx-10 my-5 rounded-lg shadow-lg text-gray-300">
-        <div className="p-4 sm:p-6">
+    <div className="min-h-screen bg-[#18181b] bg-center flex items-center justify-center p-4">
+      <div className="w-full bg-[#18181b] min-h-screen mx-4 sm:mx-10 my-5 rounded-lg text-gray-300">
+        <div className="p-4 sm:p-6 bg-[#18181b]">
           {/* Title Field */}
           <div className="mb-4">
             <label htmlFor="title" className="block text-sm font-medium text-gray-400 mb-1">
