@@ -52,7 +52,7 @@ const ApplicantCard = ({
 
   return (
     <div
-      className={`relative bg-black text-white border border-gray-700 rounded-xl shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-2xl p-6 flex flex-col justify-between ${className}`}
+      className={`relative bg-gray-700 text-white border border-gray-700 rounded-xl shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-2xl p-6 flex flex-col justify-between ${className}`}
     >
       {/* Image Section */}
       <div className="flex items-center gap-4">
@@ -62,7 +62,7 @@ const ApplicantCard = ({
             alt={`${name}'s Avatar`}
             width={80}
             height={80}
-            className="rounded-full border-2 border-blue-500 shadow-md object-cover"
+            className="rounded-full border-2 border-[#18181b] shadow-md object-cover"
           />
         </div>
         <div>

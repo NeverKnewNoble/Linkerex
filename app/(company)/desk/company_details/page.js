@@ -75,7 +75,7 @@ const CompanyDetails = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-gray-900 to-black"
+      className="min-h-screen flex flex-col items-center justify-center p-4 bg-[#18181b]"
     >
       {/* Alert Popup */}
       {alert && (

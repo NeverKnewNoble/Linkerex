@@ -106,10 +106,7 @@ export default function CreateJob() {
 
   return (
     <div
-      className="min-h-screen bg-cover bg-center flex items-center justify-center p-4"
-      style={{
-        backgroundImage: "url('/linkerex/inf.jpg')",
-      }}
+      className="min-h-screen bg-[#18181b] bg-center flex items-center justify-center p-4"
     >
       {/* Alert Popup */}
       {alert && (
@@ -124,7 +121,7 @@ export default function CreateJob() {
           </Alert>
         </div>
       )}
-      <div className="w-full bg-[#1a1a1a] min-h-screen mx-4 my-5 rounded-lg shadow-lg text-gray-300">
+      <div className="w-full bg-[#18181b] min-h-screen mx-4 my-5 rounded-lg shadow-lg text-gray-300">
         <h1 className="text-3xl sm:text-[50px] font-bold ml-4 sm:ml-8 mt-5">Create New Job</h1>
 
         <div className="p-4 sm:p-6">

@@ -16,13 +16,13 @@ const Footer = () => {
             <p className="text-sm">
               We Provide the opportunities to improve your career.
             </p>
-            <div className="flex space-x-4 mt-4">
+            {/* <div className="flex space-x-4 mt-4">
               <FaFacebook className="hover:text-blue-500 cursor-pointer" />
               <FaInstagram className="hover:text-pink-500 cursor-pointer" />
               <FaTwitter className="hover:text-blue-400 cursor-pointer" />
               <FaGithub className="hover:text-gray-300 cursor-pointer" />
               <FaYoutube className="hover:text-red-500 cursor-pointer" />
-            </div>
+            </div> */}
           </div>
 
 
@@ -30,19 +30,11 @@ const Footer = () => {
 
           {/* Company */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Company</h4>
+            <h4 className="text-white font-semibold mb-4">Contents</h4>
             <ul className="space-y-2 text-sm">
               <li> <Link href={"/#home"}>Home</Link> </li>
               <li> <Link href={"/jobs"}>Jobs</Link> </li>
               <li> <Link href={"/#about"}>About</Link> </li>
-            </ul>
-          </div>
-
-          {/* Legal */}
-          <div>
-            <h4 className="text-white font-semibold mb-4">Legal</h4>
-            <ul className="space-y-2 text-sm">
-              <li>Terms of service</li>
             </ul>
           </div>
         </div>

@@ -36,13 +36,16 @@ const Hero = () => {
 
           {/* Button */}
           <div className="mt-6">
-            <Link href={"/jobs"} passHref legacyBehavior>
-              <Button
+            <Link href={"/jobs"}>
+              {/* <Button
                 variant="faded"
                 className="bg-[#2f71c7] text-white hover:bg-white hover:text-black font-bold border-none w-[200px]"
               >
                 Find A Job Now
-              </Button>
+              </Button> */}
+              <button className="bg-blue-600 text-white px-6 py-2 font-bold rounded-full hover:border hover:bg-white hover:text-black transition-colors">
+                Find A Job Now
+              </button>
             </Link>
           </div>
         </motion.div>

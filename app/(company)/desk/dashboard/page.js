@@ -50,8 +50,8 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#0f172a] via-[#1e293b] to-[#334155] text-white p-4 sm:p-6">
-      <div className="w-full max-w-6xl bg-white/10 backdrop-blur-md rounded-xl shadow-2xl p-6 sm:p-10">
+    <div className="min-h-screen flex items-center justify-center bg-[#18181b] text-white p-4 sm:p-6">
+      <div className="w-full max-w-6xl bg-[#18181b] backdrop-blur-md rounded-xl  p-6 sm:p-10">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-center text-gray-100 mb-8 sm:mb-10 tracking-wide">
           📊 Dashboard Overview
         </h1>
