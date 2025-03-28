@@ -26,9 +26,11 @@ const JobSchema = new mongoose.Schema(
         paymentTimeline: {
             type: String,
             // enum: ["Salary", "Wage"], 
+            default: "",
         },
         amount: {
-            type: Number
+            type: Number,
+            default: "",
         },
         description: {
             type: String,
