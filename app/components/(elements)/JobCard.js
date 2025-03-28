@@ -76,6 +76,8 @@ const JobCard = ({
   const Pricing = () => {
     if (jobType === "Full-Time" || jobType === "Part-Time") {
       return `GH₵ ${price} / ${getPricingLabel()}`;
+    } if (price === null) {
+      return ""
     } else {
       return "";
     }
