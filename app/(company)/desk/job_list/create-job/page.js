@@ -48,8 +48,8 @@ export default function CreateJob() {
       !location ||
       !category ||
       !jobType ||
-      (!paymentTimeline && jobType !== "Internship") ||
-      (!amount && jobType !== "Internship") ||
+      // (!paymentTimeline && jobType !== "Internship") ||
+      // (!amount && jobType !== "Internship") ||
       !description ||
       !requirements
     ) {
