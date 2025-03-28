@@ -75,13 +75,14 @@ const JobCard = ({
 
   const Pricing = () => {
     if (jobType === "Full-Time" || jobType === "Part-Time") {
+      if (price === null || price === undefined) {
+        return ""; 
+      }
       return `GH₵ ${price} / ${getPricingLabel()}`;
-    } if (price === null) {
-      return ""
-    } else {
-      return "";
     }
+    return "";
   };
+  
 
   return (
     <div
