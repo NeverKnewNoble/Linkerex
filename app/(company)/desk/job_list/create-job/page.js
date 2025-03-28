@@ -56,10 +56,13 @@ export default function CreateJob() {
 
       setAlert({
         type: "danger",
-        message: "Please fill out all required fields.",
+        message: "Please fill out the required fields.",
       });
       return;
     }
+
+    // Ensure amount is a valid number
+    const parsedAmount = parseFloat(amount);
 
     // Prepare job data
     const jobData = {
@@ -68,8 +71,8 @@ export default function CreateJob() {
       location,
       category,
       jobType,
-      paymentTimeline: jobType === "Internship" ? null : paymentTimeline,
-      amount: jobType === "Internship" ? null : amount,
+      paymentTimeline: jobType === "Internship" ? "" : paymentTimeline,
+      amount: jobType === "Internship" ? 0 : (!isNaN(parsedAmount) ? parsedAmount : 0),
       description,
       requirements,
       createdby: session.user.id || session.user._id,
@@ -92,7 +95,7 @@ export default function CreateJob() {
 
         setTimeout(() => {
           router.push("/desk/job_list");
-        }, 8000);        
+        }, 3000);        
       }
     } catch (err) {
       // console.error("❌ Error creating job:", err.response?.data?.error || err.message);

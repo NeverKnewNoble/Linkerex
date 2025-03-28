@@ -4,11 +4,11 @@ const JobSchema = new mongoose.Schema(
     {
         title: {
             type: String,
-            required: true, // Fixed typo
+            required: true, 
         },
         company: {
             type: String,
-            required: true, // Fixed typo
+            required: true, 
         },
         location: {
             type: String,
@@ -25,12 +25,11 @@ const JobSchema = new mongoose.Schema(
         },
         paymentTimeline: {
             type: String,
-            // enum: ["Salary", "Wage"], 
             default: "",
         },
         amount: {
             type: Number,
-            default: "",
+            default: 0,
         },
         description: {
             type: String,
@@ -47,6 +46,5 @@ const JobSchema = new mongoose.Schema(
     { collection: 'jobs', timestamps: true }
 );
 
-// module.exports = mongoose.models.Jobs || mongoose.model('Job', JobSchema);
 module.exports = mongoose.models.Job || mongoose.model('Job', JobSchema);
 
