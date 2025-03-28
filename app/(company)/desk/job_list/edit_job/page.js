@@ -53,7 +53,7 @@ export default function EditJob() {
       setCategory(job.category || "");
       setJobType(job.jobType || "");
       setPaymentTimeline(job.paymentTimeline || "");
-      setAmount(job.amount || "");
+      setAmount(job.amount || 0);
       setDescription(job.description || "");
       setRequirements(job.requirements || "");
       setLoading(false);
@@ -90,7 +90,7 @@ export default function EditJob() {
 
         setTimeout(() => {
           router.push("/desk/job_list");
-        }, 8000);        
+        }, 3000);        
       }
     } catch (err) {
       // console.error("Error updating job:", err.message);
