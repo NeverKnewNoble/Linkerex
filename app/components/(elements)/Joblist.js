@@ -8,7 +8,7 @@ const Joblist = ({ searchQuery, filters }) => {
   const [jobs, setJobs] = useState([]);
   const [appliedJobs, setAppliedJobs] = useState([]); // Store applied jobs data
   const [currentPage, setCurrentPage] = useState(1);
-  const jobsPerPage = 8;
+  const jobsPerPage = 24;
   const { data: session } = useSession();
 
   // Fetch all jobs
