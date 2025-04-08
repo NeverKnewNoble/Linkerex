@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import ApplicantCard from "./ApplicantCard";
-import Loading from "../../loading";
+import Loading from "@/app/loading";
 
 const ApplicantList = () => {
   const [cardInfo, setCardInfo] = useState([]);

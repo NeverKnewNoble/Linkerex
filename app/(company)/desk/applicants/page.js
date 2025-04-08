@@ -1,4 +1,4 @@
-import ApplicantList from "@/app/components/(desk)/ApplicantList";
+import ApplicantList from "@/components/desk/applicants/ApplicantList";
 
 export default function Applicants() {
   return (

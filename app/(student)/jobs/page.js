@@ -15,7 +15,7 @@ import {
   Alert,
 } from "@nextui-org/react";
 import { FaBars } from "react-icons/fa";
-import Joblist from "@/app/components/(elements)/Joblist";
+import Joblist from "@/components/jobsPage/Joblist";
 
 const Jobs = () => {
   const [chipData, setChipData] = useState([]);

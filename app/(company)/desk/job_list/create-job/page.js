@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { getSession, useSession } from "next-auth/react";
 import { Alert } from "@nextui-org/react";
+import Location from "@/components/desk/job_list/location"
+import JobCategory from "@/components/desk/job_list/jobCategory"
 
 export default function CreateJob() {
   const [alert, setAlert] = React.useState(null);
@@ -48,8 +50,6 @@ export default function CreateJob() {
       !location ||
       !category ||
       !jobType ||
-      // (!paymentTimeline && jobType !== "Internship") ||
-      // (!amount && jobType !== "Internship") ||
       !description ||
       !requirements
     ) {
@@ -124,7 +124,7 @@ export default function CreateJob() {
           </Alert>
         </div>
       )}
-      <div className="w-full bg-[#18181b] min-h-screen mx-4 my-5 rounded-lg shadow-lg text-gray-300">
+      <div className="w-full bg-[#18181b] min-h-screen  md:mx-[300px] mx-4 my-5 rounded-lg shadow-lg text-gray-300">
         <h1 className="text-3xl sm:text-[50px] font-bold ml-4 sm:ml-8 mt-5">Create New Job</h1>
 
         <div className="p-4 sm:p-6">
@@ -163,59 +163,24 @@ export default function CreateJob() {
             <label htmlFor="location" className="block text-sm font-medium text-gray-400 mb-1">
               Location
             </label>
-            <select
+
+            <Location 
               id="location"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-800 text-gray-300 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Select location</option>
-              <option value="Madina">Madina</option>
-              <option value="East Legon">East Legon</option>
-              <option value="Spintex">Spintex</option>
-              <option value="Airport Residential Area">Airport Residential Area</option>
-              <option value="Osu">Osu</option>
-              <option value="Labone">Labone</option>
-              <option value="Cantonments">Cantonments</option>
-              <option value="Adenta">Adenta</option>
-              <option value="Dansoman">Dansoman</option>
-              <option value="Tema">Tema</option>
-              <option value="Nungua">Nungua</option>
-              <option value="Achimota">Achimota</option>
-              <option value="Sakumono">Sakumono</option>
-              <option value="Kumasi">Kumasi</option>
-              <option value="Cape Coast">Cape Coast</option>
-              <option value="Elmina">Elmina</option>
-              <option value="Kasoa">Kasoa</option>
-              <option value="Takoradi">Takoradi</option>
-              <option value="Winneba">Winneba</option>
-            </select>
-          </div>
+            />
+          </div> 
 
           <div className="mb-4">
             <label htmlFor="location" className="block text-sm font-medium text-gray-400 mb-1">
               Category
             </label>
-            <select
+
+            < JobCategory
               id="category"
               value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-800 text-gray-300 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Select Category</option>
-              <option value="Programming & Tech">Programming & Tech</option>
-              <option value="Graphics & Design">Graphics & Design</option>
-              <option value="Sales & Marketing">Sales & Marketing</option>
-              <option value="Admin & Customer Support">Admin & Customer Support</option>
-              <option value="Finance & Accounting">Finance & Accounting</option>
-              <option value="HR & Training">HR & Training</option>
-              <option value="Legal">Legal</option>
-              <option value="Engineering & Architecture">Engineering & Architecture</option>
-              <option value="Video & Animation">Video & Animation</option>
-              <option value="Writing & Translation">Writing & Translation</option>
-              <option value="Music & Audio">Music & Audio</option>
-              <option value="Photography">Photography</option>
-            </select>
+              onChange={(e) => setCategory(e.target.value)}           
+            />
           </div>
 
           {/* Job Type Field */}
@@ -281,7 +246,7 @@ export default function CreateJob() {
             </label>
             <textarea
               id="description"
-              minrows={8}
+              rows={10}
               placeholder="Enter job description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -296,7 +261,7 @@ export default function CreateJob() {
             </label>
             <textarea
               id="requirements"
-              minrows={8}
+              rows={10}
               placeholder="Enter job requirements"
               value={requirements}
               onChange={(e) => setRequirements(e.target.value)}

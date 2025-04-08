@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { Button, Textarea, Alert, Card, Spacer, Progress, Input } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
-import Loading from "../../../loading";
+import Loading from "@/app/loading";
 import { useSession } from "next-auth/react";
 
 
@@ -184,7 +184,10 @@ const ApplyingToJobs = () => {
             </span>
           </div>
           {(jobDetails.jobType === "Full-Time" || jobDetails.jobType === "Part-Time") && (
-              <div className="w-[300px] text-[18px] text-gray-200  py-1 rounded-full"><span className="font-semibold">{jobDetails.paymentTimeline}:</span> GH₵ {jobDetails.amount}</div>
+              <div className="w-[300px] text-[18px] text-gray-200  py-1 rounded-full">
+                <span className="font-semibold">{jobDetails.paymentTimeline === "" ? ``: `${jobDetails.paymentTimeline}`}</span>
+                {jobDetails.amount === 0 | "" ? `` : `: GH₵ ${jobDetails.amount}`} 
+              </div>
             )}
           <div className="space-y-4">
             <div>

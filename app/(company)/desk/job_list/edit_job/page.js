@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import Loading from "../../../../loading";
+import Loading from "@/app/loading";
 import { Alert } from "@nextui-org/react";
 import { useSession, signOut } from "next-auth/react";
 
@@ -154,7 +154,7 @@ export default function EditJob() {
 
   return (
     <div className="min-h-screen bg-[#18181b] bg-center flex items-center justify-center p-4">
-      <div className="w-full bg-[#18181b] min-h-screen mx-4 sm:mx-10 my-5 rounded-lg text-gray-300">
+      <div className="w-full bg-[#18181b] min-h-screen md:mx-[300px] mx-4 sm:mx-10 my-5 rounded-lg text-gray-300">
         <div className="p-4 sm:p-6 bg-[#18181b]">
           {/* Title Field */}
           <div className="mb-4">
@@ -311,7 +311,7 @@ export default function EditJob() {
               id="description"
               placeholder="Enter job description"
               value={description}
-              minrows={10}
+              rows={10}
               onChange={(e) => setDescription(e.target.value)}
               className="block w-full px-4 py-2 bg-gray-800 text-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
             ></textarea>
@@ -326,7 +326,7 @@ export default function EditJob() {
               id="requirements"
               placeholder="Enter job requirements"
               value={requirements}
-              minrows={10}
+              rows={10}
               onChange={(e) => setRequirements(e.target.value)}
               className="block w-full px-4 py-2 bg-gray-800 text-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
             ></textarea>

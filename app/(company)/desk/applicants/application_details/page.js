@@ -3,7 +3,7 @@
 import { Button, Textarea, Card, Select, SelectItem } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Loading from "../../../../loading";
+import Loading from "@/app/loading";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";

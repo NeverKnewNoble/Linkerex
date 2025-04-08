@@ -2,7 +2,7 @@
 
 import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import BlogCard from "../(elements)/BlogCard";
+import BlogCard from "@/components/homePage/content/BlogCard";
 
 const HelpBanner = () => {
   // Ref to track visibility
