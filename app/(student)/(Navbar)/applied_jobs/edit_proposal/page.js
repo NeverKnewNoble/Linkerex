@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { Button, Textarea, Alert, Card, Progress, Input } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
-import Loading from "../../../../loading";
+import Loading from "@/app/loading";
 import { useSession } from "next-auth/react";
 
 const EditingProposal = () => {

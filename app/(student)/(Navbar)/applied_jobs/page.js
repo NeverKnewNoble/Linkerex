@@ -19,7 +19,7 @@ import {
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import Loading from "../../../loading";
+import Loading from "@/app/loading";
 
 const AppliedJobs = () => {
   const [appliedJobs, setAppliedJobs] = useState([]); // State to store merged applied jobs data

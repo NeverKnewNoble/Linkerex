@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Form, Input, Button, Alert } from "@nextui-org/react";
 import { useSession, signOut } from "next-auth/react";
 import { motion } from "framer-motion";
-import Loading from "../../../loading";
+import Loading from "@/app/loading";
 import Login_now from "../../../NotLoggedIn";
 
 const CompanyDetails = () => {

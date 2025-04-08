@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import Loading from "../../../loading";
+import Loading from "@/app/loading";
 import { FaBriefcase, FaUserCheck, FaCalendarCheck, FaTimesCircle, FaUserPlus } from "react-icons/fa";
 
 export default function Dashboard() {

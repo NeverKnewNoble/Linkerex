@@ -1,6 +1,6 @@
-import Footer from '@/app/components/(HomePage)/Footer';
-import Navbar from '../../components/(HomePage)/Navbar'
-// import Joblist from '@/app/components/(elements)/Joblist';
+import Footer from '@/components/general/Footer';
+import Navbar from '@/components/general/Navbar'
+
 
 export default function Layout({ children }) {
     return (
