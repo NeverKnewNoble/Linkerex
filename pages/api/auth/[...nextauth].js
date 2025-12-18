@@ -4,7 +4,8 @@ import bcrypt from "bcrypt";
 import connectDB from "../../../lib/mongodb"; // Import centralized connection
 import User from "../../../models/User"; // Import your User model
 
-export default NextAuth({
+// Enhanced error handler to ensure JSON responses
+const handler = NextAuth({
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -13,47 +14,75 @@ export default NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        // Connect to MongoDB
-        await connectDB();
+        // Validate credentials exist - NextAuth requires both fields
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
 
         try {
+          // Connect to MongoDB
+          await connectDB();
+
           // Find the user in the database
           const user = await User.findOne({ email: credentials.email });
           if (!user) {
-            throw new Error("User not found");
+            return null; // Return null for invalid credentials (NextAuth best practice)
           }
 
           // Compare passwords
           const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
           if (!isPasswordValid) {
-            throw new Error("Invalid email or password");
+            return null; // Return null for invalid credentials (NextAuth best practice)
           }
 
           // Return user object on successful login
-          return { id: user._id, username: user.username, email: user.email, account_type: user.account_type, company_name: user.companyName, company_location: user.companyLocation };
-          
+          return {
+            id: user._id.toString(),
+            username: user.username,
+            email: user.email,
+            account_type: user.account_type || "student",
+            company_name: user.companyName,
+            company_location: user.companyLocation,
+          };
         } catch (err) {
           console.error("Authorize error:", err.message);
-          throw new Error("Login failed: " + err.message);
+          return null; // Return null on error (prevents JSON parse errors)
         }
       },
     }),
   ],
   pages: {
-    signIn: "/sign_up", // Custom sign-in page
+    signIn: "/login", // Updated to match actual login page
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || "fallback-secret-change-in-production",
   session: {
     strategy: "jwt", // Use JWT for sessions
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user) token.user = user; // Attach user to token
+      // Attach user data to token when user signs in
+      if (user) {
+        token.user = {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          account_type: user.account_type,
+          company_name: user.company_name,
+          company_location: user.company_location,
+        };
+      }
       return token;
     },
     async session({ session, token }) {
-      session.user = token.user; // Attach user to session
+      // Attach user data from token to session
+      if (token.user) {
+        session.user = token.user;
+      }
       return session;
     },
   },
+  debug: process.env.NODE_ENV === "development",
 });
+
+export default handler;

@@ -1,29 +1,41 @@
-import Image from "next/image";
+"use client";
 
-const BlogCard = ({ imageSrc, title }) => {
+import { motion } from "framer-motion";
+
+const BlogCard = ({ imageSrc, title, icon: Icon = null }) => {
   return (
-    <div className="rounded-lg overflow-hidden shadow-lg bg-white relative group">
-      {/* Image */}
-      <div className="relative h-[450px] w-full overflow-hidden">
-        <Image
+    <motion.div
+      className="relative rounded-2xl overflow-hidden border border-border bg-card group cursor-pointer h-full"
+      whileHover={{ y: -8 }}
+      transition={{ duration: 0.3 }}
+    >
+      {/* Image Container */}
+      <div className="relative h-[300px] sm:h-[350px] lg:h-[400px] w-full overflow-hidden">
+        <img
           src={imageSrc}
           alt={title}
-          layout="fill"
-          objectFit="cover"
-          className="rounded-t-lg transform group-hover:scale-105 transition-transform duration-300"
+          className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
+        
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10 pointer-events-none z-[1]" />
+        
+        {/* Icon Badge */}
+        {Icon && (
+          <div className="absolute top-4 right-4 p-3 bg-primary/20 backdrop-blur-sm rounded-xl border border-primary/30 z-[2]">
+            <Icon size={24} className="text-primary" />
+          </div>
+        )}
       </div>
 
-      {/* Content */}
-      <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 text-white">
-        <h3 className="text-lg font-semibold">{title}</h3>
+      {/* Title Overlay */}
+      <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 z-10">
+        <h3 className="text-lg sm:text-xl font-bold text-white leading-tight group-hover:text-primary transition-colors duration-300 drop-shadow-lg">
+          {title}
+        </h3>
       </div>
-
-      {/* Hover Effect for Shadow */}
-      <div className="absolute inset-0 rounded-lg shadow-lg group-hover:shadow-2xl transition-shadow duration-300 pointer-events-none"></div>
-    </div>
+    </motion.div>
   );
 };
 
 export default BlogCard;
-

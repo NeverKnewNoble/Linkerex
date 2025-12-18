@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button } from "@nextui-org/react";
+import { Navbar as NextUINavbar, NavbarBrand, NavbarContent, NavbarItem, Button } from "@nextui-org/react";
 import {
   Dropdown,
   DropdownTrigger,
@@ -12,98 +12,219 @@ import {
   User,
 } from "@nextui-org/react";
 import { useSession, signOut } from "next-auth/react";
+import { Menu, X, UserCircle, LogOut, LayoutDashboard, FileText } from "lucide-react";
 
-export const AcmeLogo = () => {
-  return (
-    <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
-      <path
-        clipRule="evenodd"
-        d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
-        fill="currentColor"
-        fillRule="evenodd"
-      />
-    </svg>
-  );
-};
+export default function Navbar() {
+  const { data: session } = useSession();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-export default function App() {
-  const { data: session } = useSession(); // Use the session hook to get the user session
+  // Navigation items
+  const navItems = [
+    { href: "/#home", label: "HOME" },
+    { href: "/jobs", label: "JOBS" },
+    { href: "/#about", label: "ABOUT US" },
+  ];
 
   return (
-    <Navbar position="static" className="bg-white shadow-md" style={{ backgroundColor: "black" }}>
-      <NavbarBrand>
-        <Link href={"/#home"} passHref legacyBehavior>
-          <Image src="/linkerex/whitelin.png" alt="Linkerex Logo" width={144} height={30} className="cursor-pointer" />
+    <NextUINavbar
+      position="static"
+      className="bg-background/80 backdrop-blur-md border-b border-border sticky top-0 z-50"
+      maxWidth="xl"
+      isBordered
+    >
+      {/* Logo Section */}
+      <NavbarBrand className="gap-3 max-w-fit">
+        <Link href="/#home" className="flex items-center gap-2">
+          <Image
+            src="/linkerex/whitelin.png"
+            alt="Linkerex Logo"
+            width={144}
+            height={30}
+            className="cursor-pointer hover:opacity-80 transition-opacity"
+            style={{ height: "auto" }}
+            priority
+          />
         </Link>
       </NavbarBrand>
-      {/* Hide NavbarContent on mobile screens */}
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem>
-          <Link className="text-white hover:text-[#2f71c7]" href={"/#home"}>HOME</Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link className="text-white hover:text-[#2f71c7]" href={"/jobs"}>JOBS</Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link className="text-white hover:text-[#2f71c7]" href="/#about">ABOUT US</Link>
-        </NavbarItem>
+
+      {/* Desktop Navigation */}
+      <NavbarContent className="hidden md:flex gap-6" justify="center">
+        {navItems.map((item) => {
+          return (
+            <NavbarItem key={item.href}>
+              <Link
+                href={item.href}
+                className="text-foreground/80 hover:text-primary transition-colors font-medium text-sm"
+              >
+                {item.label}
+              </Link>
+            </NavbarItem>
+          );
+        })}
       </NavbarContent>
-      <NavbarContent justify="end">
+
+      {/* Right Side Content */}
+      <NavbarContent justify="end" className="gap-3">
         {session ? (
-          // If the user is logged in, display the Dropdown for user actions
-          <Dropdown placement="bottom-start">
+          // User dropdown when logged in
+          <Dropdown placement="bottom-end" backdrop="blur">
             <DropdownTrigger>
               <User
                 as="button"
-                avatarProps={{ src: "/linkerex/user1.png" }}
-                className="transition-transform"
-                description={`${session.user.account_type}`}
-                name={session.user.username}
+                avatarProps={{
+                  src: "/linkerex/user1.png",
+                  size: "sm",
+                  className: "ring-2 ring-primary/20",
+                }}
+                className="transition-transform hover:scale-105 cursor-pointer"
+                description={
+                  <span className="text-xs text-muted capitalize">
+                    {session.user.account_type}
+                  </span>
+                }
+                name={
+                  <span className="font-semibold text-sm">
+                    {session.user.username}
+                  </span>
+                }
               />
             </DropdownTrigger>
-            <DropdownMenu aria-label="User Actions" variant="flat">
-              <DropdownItem key="profile" className="h-14 gap-2">
-                <p className="font-bold">Signed in as</p>
-                <p className="font-bold">{session.user.email}</p>
+            <DropdownMenu
+              aria-label="User Actions"
+              variant="flat"
+              className="min-w-[200px]"
+            >
+              <DropdownItem
+                key="profile"
+                className="h-14 gap-2 border-b border-border"
+                textValue="Profile"
+              >
+                <div className="flex flex-col">
+                  <p className="text-xs text-muted">Signed in as</p>
+                  <p className="font-semibold text-sm">{session.user.email}</p>
+                </div>
               </DropdownItem>
-              {/* **SO Navbar Account type control */}
-              {session.user.account_type === "company"? 
-              <>
-                <DropdownItem key="desk" onClick={() => (window.location.href = "/desk/dashboard")}>Desk</DropdownItem>
-              </>
-              :
-              <>
-                <DropdownItem key="user" onClick={() => (window.location.href = "/info")}>User</DropdownItem>
-                <DropdownItem key="applied_jobs" onClick={() => (window.location.href = "/applied_jobs")}>Applied Jobs</DropdownItem>
-              </>
-              }
-              {/* <DropdownItem key="settings" onClick={() => (window.location.href = "/")}>Settings</DropdownItem> */}
-              <DropdownItem key="logout" color="danger" onClick={() => signOut({ callbackUrl: "/" })}>Log Out</DropdownItem>
+
+              {/* Conditional menu items based on account type */}
+              {session.user.account_type === "company" ? (
+                <>
+                  <DropdownItem
+                    key="desk"
+                    startContent={<LayoutDashboard size={16} />}
+                    onClick={() => (window.location.href = "/desk/dashboard")}
+                  >
+                    Dashboard
+                  </DropdownItem>
+                </>
+              ) : (
+                <>
+                  <DropdownItem
+                    key="profile"
+                    startContent={<UserCircle size={16} />}
+                    onClick={() => (window.location.href = "/info")}
+                  >
+                    Profile
+                  </DropdownItem>
+                  <DropdownItem
+                    key="applied_jobs"
+                    startContent={<FileText size={16} />}
+                    onClick={() => (window.location.href = "/applied_jobs")}
+                  >
+                    Applied Jobs
+                  </DropdownItem>
+                </>
+              )}
+
+              <DropdownItem
+                key="logout"
+                color="danger"
+                startContent={<LogOut size={16} />}
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="text-danger"
+              >
+                Log Out
+              </DropdownItem>
             </DropdownMenu>
           </Dropdown>
         ) : (
-          // ! If the user is logged out, show login and signup buttons
+          // Login/Signup buttons when not logged in
           <>
-            <NavbarItem>
-              <Link href={"/login"} passHref legacyBehavior>
-                {/* <Button variant="flat" className="text-white border bg-black hover:bg-[#2f71c7] hover:text-white font-semibold hover:border-[#2f71c7]">
+            <NavbarItem className="hidden sm:flex">
+              <Link href="/login">
+                <Button
+                  variant="ghost"
+                  className="text-foreground hover:text-primary hover:bg-primary/10 font-medium"
+                >
                   LOGIN
-                </Button> */}
-                <button className="border px-4 py-2 rounded-lg font-bold hover:bg-blue-600 bg-black text-white hover:border-none transition-colors ">
-                  LOGIN
-                </button>
+                </Button>
               </Link>
             </NavbarItem>
-            <NavbarItem  className="hidden lg:flex">
-              <Link href={"/sign_up"} passHref legacyBehavior>
-                <Button color="primary" variant="flat" className="border hover:text-white hover:bg-black bg-[#18181b] text-white font-semibold">
+            <NavbarItem className="hidden lg:flex">
+              <Link href="/sign_up">
+                <Button
+                  color="primary"
+                  className="font-semibold px-6"
+                  variant="solid"
+                >
                   SIGN UP
                 </Button>
               </Link>
             </NavbarItem>
+
+            {/* Mobile menu button */}
+            <NavbarItem className="sm:hidden">
+              <Button
+                isIconOnly
+                variant="ghost"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              </Button>
+            </NavbarItem>
           </>
         )}
       </NavbarContent>
-    </Navbar>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && !session && (
+        <div className="md:hidden absolute top-full left-0 right-0 bg-card border-b border-border shadow-lg">
+          <div className="flex flex-col p-4 gap-3">
+            {navItems.map((item) => {
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="px-4 py-3 text-foreground hover:bg-primary/10 rounded-lg transition-colors font-medium"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+            <div className="flex flex-col gap-2 pt-4 border-t border-border">
+              <Link href="/login">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start font-medium"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  LOGIN
+                </Button>
+              </Link>
+              <Link href="/sign_up">
+                <Button
+                  color="primary"
+                  className="w-full font-semibold"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  SIGN UP
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+    </NextUINavbar>
   );
 }
