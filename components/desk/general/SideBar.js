@@ -12,101 +12,188 @@ import {
   User,
 } from "@nextui-org/react";
 import { useSession, signOut } from "next-auth/react";
-import { Icon } from "@iconify/react";
+import { LayoutDashboard, Briefcase, Users, Menu, X, Home, Building2, LogOut, UserCircle } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 const Sidebar = () => {
   const { data: session } = useSession();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to manage sidebar visibility
+  const pathname = usePathname();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // Menu items with lucide icons
   const menuItems = [
-    { id: 1, name: "Dashboard", icon: "mdi:view-dashboard-outline", href: "/desk/dashboard" },
-    { id: 2, name: "Job List", icon: "mdi:briefcase-outline", href: "/desk/job_list" },
-    { id: 3, name: "Applicants", icon: "mdi:message-outline", href: "/desk/applicants" },
+    {
+      id: 1,
+      name: "Dashboard",
+      icon: LayoutDashboard,
+      href: "/desk/dashboard",
+    },
+    {
+      id: 2,
+      name: "Job List",
+      icon: Briefcase,
+      href: "/desk/job_list",
+    },
+    {
+      id: 3,
+      name: "Applicants",
+      icon: Users,
+      href: "/desk/applicants",
+    },
   ];
+
+  // Check if a menu item is active
+  const isActive = (href) => pathname === href || pathname?.startsWith(href + "/");
 
   return (
     <>
       {/* Mobile Toggle Button */}
       <button
-        className="fixed top-4 left-4 z-50 p-2 bg-[#2f71c7] text-white rounded-lg lg:hidden"
+        className="fixed top-4 left-4 z-50 p-2.5 bg-primary hover:bg-primary-hover text-white rounded-lg shadow-lg lg:hidden transition-colors"
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        aria-label="Toggle sidebar"
       >
-        <Icon icon={isSidebarOpen ? "mdi:close" : "mdi:menu"} className="text-xl" />
+        {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
       </button>
 
       {/* Sidebar */}
-      <div
-        className={`bg-black text-white min-h-screen w-[250px] shadow-md fixed lg:relative transform transition-transform duration-200 ease-in-out z-40 ${
+      <aside
+        className={`bg-card border-r border-border min-h-screen w-[280px] shadow-xl fixed lg:relative transform transition-transform duration-300 ease-in-out z-40 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
         {/* Logo Section */}
-        <div className="flex items-center justify-center h-[80px] pr-28 border-b border-gray-700">
-          <Image
-            src="/linkerex/whitelin.png"
-            alt="Linkerex Logo"
-            width={144}
-            height={30}
-            className="cursor-pointer"
-          />
+        <div className="flex items-center justify-center h-[80px] border-b border-border px-4">
+          <Link href="/#home" className="flex items-center">
+            <Image
+              src="/linkerex/whitelin.png"
+              alt="Linkerex Logo"
+              width={144}
+              height={30}
+              className="cursor-pointer hover:opacity-80 transition-opacity brightness-0 invert"
+              style={{ height: "auto" }}
+              priority
+            />
+          </Link>
         </div>
 
-        {/* Additional Actions */}
-        <div className="mt-2 p-3 pl-5 rounded-lg">
+        {/* User Profile Section */}
+        <div className="p-4 border-b border-border">
           {session?.user ? (
-            <Dropdown placement="bottom-start">
+            <Dropdown placement="bottom-start" backdrop="blur">
               <DropdownTrigger>
-                <User
-                  as="button"
-                  avatarProps={{ src: "/linkerex/user1.png" }}
-                  className="transition-transform"
-                  description={`${session.user.account_type}`}
-                  name={session.user.username}
-                />
+                <button className="w-full">
+                  <User
+                    as="div"
+                    avatarProps={{
+                      src: "/linkerex/user1.png",
+                      size: "md",
+                      className: "ring-2 ring-primary/20",
+                    }}
+                    className="transition-transform hover:scale-[1.02] cursor-pointer w-full justify-start"
+                    description={
+                      <span className="text-xs text-muted capitalize">
+                        {session.user.account_type}
+                      </span>
+                    }
+                    name={
+                      <span className="font-semibold text-sm text-foreground">
+                        {session.user.username}
+                      </span>
+                    }
+                  />
+                </button>
               </DropdownTrigger>
-              <DropdownMenu aria-label="User Actions" variant="flat">
-                <DropdownItem key="profile" className="h-14 gap-2">
-                  <p className="font-bold">Signed in as</p>
-                  <p className="font-bold">{session.user.email}</p>
+              <DropdownMenu
+                aria-label="User Actions"
+                variant="flat"
+                className="min-w-[200px]"
+              >
+                <DropdownItem
+                  key="profile"
+                  className="h-14 gap-2 border-b border-border"
+                  textValue="Profile"
+                >
+                  <div className="flex flex-col">
+                    <p className="text-xs text-muted">Signed in as</p>
+                    <p className="font-semibold text-sm">{session.user.email}</p>
+                  </div>
                 </DropdownItem>
-                <DropdownItem key="home" onClick={() => (window.location.href = "/")}>
+                <DropdownItem
+                  key="home"
+                  startContent={<Home size={16} />}
+                  onClick={() => (window.location.href = "/")}
+                >
                   Home
                 </DropdownItem>
                 <DropdownItem
                   key="company_details"
+                  startContent={<Building2 size={16} />}
                   onClick={() => (window.location.href = "/desk/company_details")}
                 >
                   Company Details
                 </DropdownItem>
-                <DropdownItem key="logout" color="danger" onClick={() => signOut({ callbackUrl: "/" })}>
+                <DropdownItem
+                  key="logout"
+                  color="danger"
+                  startContent={<LogOut size={16} />}
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                  className="text-danger"
+                >
                   Log Out
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
           ) : (
-            <button onClick={() => (window.location.href = "/login")}>Log In</button>
+            <Button
+              variant="flat"
+              className="w-full"
+              onClick={() => (window.location.href = "/login")}
+              startContent={<UserCircle size={18} />}
+            >
+              Log In
+            </Button>
           )}
         </div>
 
-        {/* Menu Items */}
-        <nav className="flex flex-col">
-          {menuItems.map((item) => (
-            <a
-              key={item.id}
-              href={item.href}
-              className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-[#2f71c7] transition-colors duration-200"
-            >
-              <Icon icon={item.icon} className="text-xl mr-3" />
-              <span>{item.name}</span>
-            </a>
-          ))}
+        {/* Navigation Menu */}
+        <nav className="flex flex-col p-4 gap-2">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const active = isActive(item.href);
+            return (
+              <Link
+                key={item.id}
+                href={item.href}
+                onClick={() => setIsSidebarOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                  active
+                    ? "bg-primary text-white shadow-lg shadow-primary/20"
+                    : "text-muted hover:bg-card/80 hover:text-foreground"
+                }`}
+              >
+                <Icon size={20} className={active ? "text-white" : "text-muted"} />
+                <span className="font-medium">{item.name}</span>
+                {active && (
+                  <div className="ml-auto w-1.5 h-1.5 bg-white rounded-full" />
+                )}
+              </Link>
+            );
+          })}
         </nav>
-      </div>
+
+        {/* Footer Section */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border">
+          <p className="text-xs text-muted text-center">
+            Linkerex © {new Date().getFullYear()}
+          </p>
+        </div>
+      </aside>
 
       {/* Overlay for Mobile View */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
