@@ -90,10 +90,10 @@ const JobCard = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className={`group relative bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 ${className}`}
+      className={`group relative bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 flex flex-col h-full ${className}`}
     >
       {/* Header Section with Job Type Badge */}
-      <div className="relative p-6 pb-4">
+      <div className="relative p-6 pb-4 flex-1">
         {/* Job Type Badge */}
         <div className="flex items-start justify-between mb-4">
           <div
